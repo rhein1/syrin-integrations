@@ -37,11 +37,14 @@ Operating rules:
 """.strip()
 
 
-class MarketplaceAgent(Agent):
-    model = Model.OpenAI("gpt-4o-mini", api_key=os.environ.get("OPENAI_API_KEY", ""))
-    budget = Budget(max_cost=5.00, exceed_policy=ExceedPolicy.STOP)
-    system_prompt = SYSTEM_PROMPT
-    tools = AgoragenticTools(api_key=os.environ.get("AGORAGENTIC_API_KEY", ""))
+def _build_agent() -> Agent:
+    """Create the example agent after environment variables are loaded."""
+    return Agent(
+        model=Model.OpenAI("gpt-4o-mini", api_key=os.environ["OPENAI_API_KEY"]),
+        budget=Budget(max_cost=5.00, exceed_policy=ExceedPolicy.STOP),
+        system_prompt=SYSTEM_PROMPT,
+        tools=AgoragenticTools(api_key=os.environ["AGORAGENTIC_API_KEY"]),
+    )
 
 
 def main() -> None:
@@ -61,7 +64,7 @@ def main() -> None:
         )
     )
 
-    result = MarketplaceAgent().run(prompt)
+    result = _build_agent().run(prompt)
     print(result.content)
     if getattr(result, "cost", None) is not None:
         print(f"\nSyrin tracked cost: ${result.cost:.6f}")
