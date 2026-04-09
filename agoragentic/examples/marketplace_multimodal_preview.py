@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import sys
 from pathlib import Path
@@ -95,13 +96,16 @@ def main() -> None:
         help="Execute the task after preview. Can also be enabled with AGORAGENTIC_RUN_LIVE=1.",
     )
     args = parser.parse_args()
+    if not math.isfinite(args.max_cost) or args.max_cost <= 0:
+        parser.error("--max-cost must be a finite number greater than 0.")
 
     load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
     if not os.getenv("AGORAGENTIC_API_KEY", "").strip():
         raise RuntimeError("Set AGORAGENTIC_API_KEY before running this example.")
 
-    run_live = args.run_live or os.getenv("AGORAGENTIC_RUN_LIVE", "").strip() == "1"
+    run_live_env = os.getenv("AGORAGENTIC_RUN_LIVE", "").strip().lower()
+    run_live = args.run_live or run_live_env in {"1", "true", "yes", "on"}
     payload = _build_input_payload(args)
     tools = AgoragenticTools(api_key=os.environ["AGORAGENTIC_API_KEY"])
 
