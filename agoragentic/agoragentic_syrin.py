@@ -1,5 +1,5 @@
 """
-Agoragentic x Syrin Integration — v1.1
+Agoragentic x Syrin Integration — v1.2
 ======================================
 
 Agoragentic marketplace tools for Syrin agents.
@@ -94,6 +94,14 @@ def _normalize_search_result(capability: Dict[str, Any]) -> Dict[str, Any]:
         "endpoint_health": capability.get("endpoint_health"),
         "activity_status": capability.get("activity_status"),
     }
+
+
+def _normalize_tags(tags: Any) -> List[str]:
+    if isinstance(tags, list):
+        return [str(tag).strip() for tag in tags if str(tag).strip()]
+    if isinstance(tags, str):
+        return [tag.strip() for tag in tags.split(",") if tag.strip()]
+    return []
 
 
 # ─── Tool Functions ───────────────────────────────────────
@@ -400,6 +408,132 @@ def agoragentic_categories() -> Dict[str, Any]:
                 for category in data.get("categories", [])
             ]
             return {"total": data.get("total", len(categories)), "categories": categories}
+        return _error_payload(response, data)
+    except Exception as exc:
+        return {"error": str(exc)}
+
+
+def agoragentic_relay_deploy(
+    name: str,
+    source_code: str,
+    description: str = "",
+    entry_point: str = "handler",
+    auto_list: bool = False,
+    category: str = "developer-tools",
+    price: float = 0.10,
+    tags: Any = "",
+    listing_type: str = "service",
+    input_schema: Optional[Dict[str, Any]] = None,
+    output_schema: Optional[Dict[str, Any]] = None,
+    *,
+    _api_key: str = ""
+) -> Dict[str, Any]:
+    """Deploy a relay-hosted JavaScript function for native marketplace hosting."""
+    api_key = _require_key(_api_key)
+    try:
+        response = requests.post(
+            _build_url("/api/relay/deploy"),
+            json={
+                "name": name,
+                "description": description,
+                "source_code": source_code,
+                "entry_point": entry_point,
+                "auto_list": auto_list,
+                "category": category,
+                "price": price,
+                "tags": _normalize_tags(tags),
+                "listing_type": listing_type,
+                "input_schema": input_schema or {},
+                "output_schema": output_schema or {},
+            },
+            headers=_headers(api_key),
+            timeout=60,
+        )
+        data = _safe_json(response)
+        if response.status_code == 201:
+            return {
+                "status": data.get("status"),
+                "relay_function_id": data.get("id"),
+                "relay_url": data.get("relay_url"),
+                "capability_id": data.get("capability_id"),
+                "source_hash": data.get("source_hash"),
+                "hosting": data.get("hosting"),
+                "platform_hosting": data.get("platform_hosting"),
+                "listing": data.get("listing"),
+                "next_steps": data.get("next_steps"),
+            }
+        return _error_payload(response, data)
+    except Exception as exc:
+        return {"error": str(exc)}
+
+
+def agoragentic_relay_list(*, _api_key: str = "") -> Dict[str, Any]:
+    """List relay-hosted functions owned by the authenticated seller."""
+    api_key = _require_key(_api_key)
+    try:
+        response = requests.get(
+            _build_url("/api/relay"),
+            headers=_headers(api_key),
+            timeout=DEFAULT_TIMEOUT,
+        )
+        data = _safe_json(response)
+        if response.status_code == 200:
+            functions = [
+                {
+                    "id": fn.get("id"),
+                    "name": fn.get("name"),
+                    "status": fn.get("status"),
+                    "version": fn.get("version"),
+                    "relay_url": fn.get("relay_url"),
+                    "capability_id": fn.get("capability_id"),
+                    "total_executions": (fn.get("stats") or {}).get("total_executions"),
+                    "avg_execution_ms": (fn.get("stats") or {}).get("avg_execution_ms"),
+                }
+                for fn in data.get("functions", [])
+            ]
+            return {
+                "count": data.get("count", len(functions)),
+                "limit": data.get("limit"),
+                "functions": functions,
+                "hosting": data.get("hosting"),
+                "platform_hosting": data.get("platform_hosting"),
+            }
+        return _error_payload(response, data)
+    except Exception as exc:
+        return {"error": str(exc)}
+
+
+def agoragentic_relay_test(
+    relay_function_id: str,
+    input_data: Optional[Dict[str, Any]] = None,
+    *,
+    _api_key: str = ""
+) -> Dict[str, Any]:
+    """Dry-run a relay-hosted function without billing or marketplace side effects."""
+    api_key = _require_key(_api_key)
+    try:
+        response = requests.post(
+            _build_url(f"/api/relay/{relay_function_id}/test"),
+            json={"input": _normalize_input_data(input_data)},
+            headers=_headers(api_key),
+            timeout=30,
+        )
+        data = _safe_json(response)
+        if response.status_code == 200:
+            fn = data.get("function") or {}
+            return {
+                "success": data.get("success"),
+                "result": data.get("result"),
+                "error": data.get("error"),
+                "execution_ms": data.get("execution_ms"),
+                "relay_function": {
+                    "id": fn.get("id"),
+                    "name": fn.get("name"),
+                    "version": fn.get("version"),
+                },
+                "hosting": data.get("hosting"),
+                "platform_hosting": data.get("platform_hosting"),
+            }
         return _error_payload(response, data)
     except Exception as exc:
         return {"error": str(exc)}
@@ -789,7 +923,7 @@ class AgoragenticTools:
             budget = Budget(max_cost=5.00)
             tools = AgoragenticTools(api_key="amk_your_key")
 
-    All 16 marketplace tools are automatically available to the agent.
+    All 19 marketplace tools are automatically available to the agent.
     The API key can also be set via AGORAGENTIC_API_KEY.
     """
 
@@ -819,6 +953,9 @@ class AgoragenticTools:
             agoragentic_register,
             agoragentic_x402_test,
             agoragentic_categories,
+            bind(agoragentic_relay_deploy),
+            bind(agoragentic_relay_list),
+            bind(agoragentic_relay_test),
             bind(agoragentic_memory_write),
             bind(agoragentic_memory_read),
             bind(agoragentic_memory_search),
