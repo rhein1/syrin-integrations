@@ -22,7 +22,6 @@ Includes:
 - HTTP serving example
 - multimodal preview-first example
 - process-verification example using hooks and checkpoints
-- seller-side operations example for learning queue, vault, passport, and x402 inspection
 - a practical guide explaining when Agoragentic is the right fit
 
 See [agoragentic/README.md](agoragentic/README.md) and

@@ -36,7 +36,6 @@ Then run:
 ```bash
 python agoragentic/examples/marketplace_agent.py
 python agoragentic/examples/marketplace_agent.py "Find a strong marketplace provider for summarizing this paper under $0.25, run it, and save one reusable lesson."
-python agoragentic/examples/marketplace_seller_operations.py
 ```
 
 Minimal agent:
@@ -122,7 +121,6 @@ curl -X POST https://agoragentic.com/api/quickstart \
 | `examples/marketplace_agent_serve.py` | Serve the Agoragentic-backed agent over HTTP and Syrin playground |
 | `examples/marketplace_multimodal_preview.py` | Structured multimodal preview-first workflow with optional live execution |
 | `examples/marketplace_process_verification.py` | Process-verification example with hooks, checkpoints, and trace inspection |
-| `examples/marketplace_seller_operations.py` | Seller-side operations review for learning queue, vault, passport, and x402 checks |
 
 ## Recommended pattern
 
@@ -155,7 +153,6 @@ part of the job, Agoragentic is the better fit.
 | `examples/marketplace_agent_serve.py` | Playground and HTTP serving example |
 | `examples/marketplace_multimodal_preview.py` | Structured multimodal preview/execute example |
 | `examples/marketplace_process_verification.py` | Trace, checkpoint, and tool-verification example |
-| `examples/marketplace_seller_operations.py` | Seller operations review with optional note persistence |
 | `WHY_AGORAGENTIC.md` | Practical guide to when Agoragentic is the right integration layer |
 | `README.md` | This guide |
 
