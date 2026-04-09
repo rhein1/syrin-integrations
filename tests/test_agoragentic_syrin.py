@@ -1,3 +1,5 @@
+"""Regression coverage for the Agoragentic Syrin adapter."""
+
 import importlib
 import sys
 import types
@@ -20,6 +22,7 @@ def _import_integration():
         """Minimal requests.Response stand-in for import-time type references."""
 
     def _not_patched(*args, **kwargs):
+        """Fail fast when a test forgets to patch the requests stub."""
         raise AssertionError("requests stub should be patched in tests")
 
     requests_stub.Response = Response
@@ -43,6 +46,7 @@ class FakeResponse:
         text="",
         reason="OK",
     ):
+        """Build a configurable fake response."""
         self.status_code = status_code
         self._json_data = json_data if json_data is not None else {}
         self._json_error = json_error
@@ -139,6 +143,106 @@ class AgoragenticIntegrationTests(unittest.TestCase):
         params = mock_get.call_args.kwargs["params"]
         self.assertEqual(params["limit"], 5)
         self.assertEqual(result["total"], 0)
+
+    @patch.object(integration.requests, "post")
+    def test_memory_write_returns_saved_metadata(self, mock_post):
+        """agoragentic_memory_write should return the normalized saved metadata."""
+        mock_post.return_value = FakeResponse(
+            json_data={
+                "output": {
+                    "key": "workflow/preview-first",
+                    "namespace": "seller",
+                    "updated_at": "2026-04-09T18:00:00Z",
+                }
+            }
+        )
+
+        result = integration.agoragentic_memory_write(
+            key="workflow/preview-first",
+            value="Always preview before paid execution.",
+            namespace="seller",
+            _api_key="test-key",
+        )
+
+        payload = mock_post.call_args.kwargs["json"]
+        self.assertEqual(payload["input"]["key"], "workflow/preview-first")
+        self.assertEqual(payload["input"]["namespace"], "seller")
+        self.assertEqual(result["status"], "saved")
+        self.assertEqual(result["updated_at"], "2026-04-09T18:00:00Z")
+
+    @patch.object(integration.requests, "post")
+    def test_save_learning_note_uses_fallback_tags_when_output_omits_them(self, mock_post):
+        """agoragentic_save_learning_note should preserve input tags when output omits them."""
+        mock_post.return_value = FakeResponse(
+            status_code=201,
+            json_data={
+                "output": {
+                    "action": "created",
+                    "memory_key": "learning/preview-first",
+                    "namespace": "learning",
+                    "payload": {
+                        "title": "Preview first",
+                        "lesson": "Match before execute.",
+                    },
+                }
+            },
+        )
+
+        result = integration.agoragentic_save_learning_note(
+            title="Preview first",
+            lesson="Match before execute.",
+            tags="seller,preview-first",
+            _api_key="test-key",
+        )
+
+        payload = mock_post.call_args.kwargs["json"]
+        self.assertEqual(payload["input"]["tags"], ["seller", "preview-first"])
+        self.assertEqual(result["tags"], ["seller", "preview-first"])
+        self.assertEqual(result["status"], "created")
+
+    @patch.object(integration.requests, "get")
+    def test_secret_retrieve_lists_labels_when_output_is_present(self, mock_get):
+        """agoragentic_secret_retrieve should return the output payload unchanged."""
+        mock_get.return_value = FakeResponse(
+            json_data={
+                "output": {
+                    "labels": [
+                        {"label": "demo-token", "hint": "Example label"},
+                        {"label": "prod-token", "hint": "Production token"},
+                    ]
+                }
+            }
+        )
+
+        result = integration.agoragentic_secret_retrieve(_api_key="test-key")
+
+        self.assertEqual(len(result["labels"]), 2)
+        self.assertEqual(result["labels"][0]["label"], "demo-token")
+
+    def test_passport_rejects_missing_verify_and_identity_arguments(self):
+        """agoragentic_passport should fail fast on missing required public arguments."""
+        verify_result = integration.agoragentic_passport(action="verify")
+        identity_result = integration.agoragentic_passport(action="identity")
+        invalid_action_result = integration.agoragentic_passport(action="bogus")
+
+        self.assertEqual(verify_result["error"], "missing_wallet_address")
+        self.assertEqual(identity_result["error"], "missing_agent_ref")
+        self.assertEqual(invalid_action_result["error"], "invalid_action")
+
+    @patch.object(integration.requests, "get")
+    def test_passport_check_uses_bound_api_key(self, mock_get):
+        """AgoragenticTools should bind the API key into agoragentic_passport check calls."""
+        mock_get.return_value = FakeResponse(
+            json_data={"output": {"status": "verified", "agent_id": "agt_123"}}
+        )
+
+        tools = integration.AgoragenticTools(api_key="bound-key")
+        passport_tool = next(tool for tool in tools if tool.__name__ == "agoragentic_passport")
+        result = passport_tool(action="check")
+
+        headers = mock_get.call_args.kwargs["headers"]
+        self.assertEqual(headers["Authorization"], "Bearer bound-key")
+        self.assertEqual(result["status"], "verified")
 
     @patch.object(integration.requests, "post")
     def test_toolset_binds_api_key_to_wrapped_calls(self, mock_post):
