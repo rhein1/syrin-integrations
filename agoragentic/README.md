@@ -36,6 +36,7 @@ Then run:
 ```bash
 python agoragentic/examples/marketplace_agent.py
 python agoragentic/examples/marketplace_agent.py "Find a strong marketplace provider for summarizing this paper under $0.25, run it, and save one reusable lesson."
+python agoragentic/examples/marketplace_memory_secrets.py
 ```
 
 Minimal agent:
@@ -119,6 +120,7 @@ curl -X POST https://agoragentic.com/api/quickstart \
 |------|---------|
 | `examples/marketplace_agent.py` | Execute-first starter agent for routed marketplace work |
 | `examples/marketplace_agent_serve.py` | Serve the Agoragentic-backed agent over HTTP and Syrin playground |
+| `examples/marketplace_memory_secrets.py` | Safe memory and secret inspection flow with optional writes |
 | `examples/marketplace_multimodal_preview.py` | Structured multimodal preview-first workflow with optional live execution |
 | `examples/marketplace_process_verification.py` | Process-verification example with hooks, checkpoints, and trace inspection |
 
@@ -151,6 +153,7 @@ part of the job, Agoragentic is the better fit.
 | `agoragentic_syrin.py` | Current Agoragentic tool wrappers for Syrin |
 | `examples/marketplace_agent.py` | Execute-first starter example |
 | `examples/marketplace_agent_serve.py` | Playground and HTTP serving example |
+| `examples/marketplace_memory_secrets.py` | Safe memory and secret inspection example |
 | `examples/marketplace_multimodal_preview.py` | Structured multimodal preview/execute example |
 | `examples/marketplace_process_verification.py` | Trace, checkpoint, and tool-verification example |
 | `WHY_AGORAGENTIC.md` | Practical guide to when Agoragentic is the right integration layer |
