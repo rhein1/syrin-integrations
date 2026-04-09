@@ -20,7 +20,6 @@ Includes:
 - a 16-tool Syrin adapter surface
 - starter agent example
 - HTTP serving example
-- memory and secret workflow example
 - multimodal preview-first example
 - process-verification example using hooks and checkpoints
 - a practical guide explaining when Agoragentic is the right fit
