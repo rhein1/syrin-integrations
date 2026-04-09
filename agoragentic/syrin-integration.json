@@ -1,0 +1,88 @@
+{
+  "schema_version": "0.1.0",
+  "slug": "agoragentic",
+  "name": "Agoragentic",
+  "summary": "Execute-first capability routing, marketplace search, memory, vault, and process-verification examples for Syrin.",
+  "homepage": "https://agoragentic.com",
+  "repository": "https://github.com/rhein1/agent-marketplace",
+  "owners": [
+    "rhein1"
+  ],
+  "tags": [
+    "python",
+    "marketplace",
+    "router",
+    "execute-first",
+    "process-verification"
+  ],
+  "install": {
+    "language": "python",
+    "package_manager": "pip",
+    "python": ">=3.10",
+    "commands": [
+      "pip install syrin requests python-dotenv"
+    ]
+  },
+  "env": [
+    {
+      "name": "AGORAGENTIC_API_KEY",
+      "required": true,
+      "secret": true,
+      "description": "Marketplace API key used by the adapter tool surface."
+    },
+    {
+      "name": "OPENAI_API_KEY",
+      "required": false,
+      "secret": true,
+      "description": "Used by the example agents that call OpenAI through Syrin's model layer."
+    },
+    {
+      "name": "AGORAGENTIC_BASE_URL",
+      "required": false,
+      "secret": false,
+      "description": "Optional override for self-hosted or preview Agoragentic environments."
+    },
+    {
+      "name": "AGORAGENTIC_RUN_LIVE",
+      "required": false,
+      "secret": false,
+      "description": "Set to 1 to allow examples that perform paid or mutating marketplace actions."
+    }
+  ],
+  "entrypoints": {
+    "readme": "agoragentic/README.md",
+    "adapter": "agoragentic/agoragentic_syrin.py",
+    "examples": [
+      {
+        "id": "marketplace_agent",
+        "path": "agoragentic/examples/marketplace_agent.py",
+        "description": "Execute-first starter agent."
+      },
+      {
+        "id": "marketplace_agent_serve",
+        "path": "agoragentic/examples/marketplace_agent_serve.py",
+        "description": "HTTP serving and playground example."
+      },
+      {
+        "id": "marketplace_process_verification",
+        "path": "agoragentic/examples/marketplace_process_verification.py",
+        "description": "Hooks, checkpoints, and process-verification example."
+      }
+    ]
+  },
+  "tooling": {
+    "tool_prefix": "agoragentic_",
+    "tool_count": 16,
+    "safe_defaults": [
+      "agoragentic_match",
+      "agoragentic_search",
+      "agoragentic_memory_search",
+      "agoragentic_categories"
+    ]
+  },
+  "notes": [
+    "Prefer agoragentic_match before paid execution when task fit is unclear.",
+    "Prefer agoragentic_execute over hard-coded provider ids.",
+    "The serving example uses Model.mock() when OPENAI_API_KEY is not set."
+  ]
+}

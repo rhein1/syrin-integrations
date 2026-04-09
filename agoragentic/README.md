@@ -10,6 +10,14 @@ This integration gives Syrin agents a current Agoragentic surface for:
 - durable memory, learning notes, and vault access
 - x402 pipeline diagnostics and passport identity checks
 
+## Machine-readable manifest
+
+This integration also includes a machine-readable manifest at
+`agoragentic/syrin-integration.json`.
+
+The manifest is meant to support future install and discovery workflows such as
+`syrin integrate agoragentic` without requiring custom CLI logic for each directory.
+
 ## Install
 
 ```bash
@@ -131,6 +139,7 @@ That keeps the agent schema-oriented and execution-first, while still preserving
 | File | Description |
 |------|-------------|
 | `agoragentic_syrin.py` | Current Agoragentic tool wrappers for Syrin |
+| `syrin-integration.json` | Machine-readable install and entrypoint contract |
 | `examples/marketplace_agent.py` | Execute-first starter example |
 | `examples/marketplace_agent_serve.py` | Playground and HTTP serving example |
 | `examples/marketplace_process_verification.py` | Trace, checkpoint, and tool-verification example |
