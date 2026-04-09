@@ -1,10 +1,10 @@
 """Process-verify an Agoragentic workflow with checkpoints and trace inspection.
 
 Demonstrates:
-  - attaching tool hooks to audit which third-party tools ran
+  - loading a machine-readable eval pack
   - checkpointing around a marketplace-assisted workflow
   - inspecting `response.trace` for process-level verification
-  - comparing actual tool usage against expected workflow checkpoints
+  - writing trace/checkpoint/result artifacts for local inspection
 
 Requires:
   - `OPENAI_API_KEY` to let the agent decide which tools to call
@@ -12,10 +12,12 @@ Requires:
 
 Run:
     python agoragentic/examples/marketplace_process_verification.py
+    python agoragentic/examples/marketplace_process_verification.py agoragentic/evals/paper_summary_preview_only.json
 """
 
 from __future__ import annotations
 
+import argparse
 import os
 import sys
 import tempfile
@@ -28,6 +30,7 @@ if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
 from agoragentic.agoragentic_syrin import AgoragenticTools
+from agoragentic.eval_runner import load_eval_spec, run_eval_spec
 from syrin import Agent, Budget, CheckpointConfig, CheckpointTrigger, Model
 from syrin.enums import ExceedPolicy
 
@@ -63,60 +66,62 @@ def _build_agent(checkpoint_path: str) -> Agent:
 
 def main() -> None:
     """Run a small process-verification pass against the Agoragentic tool workflow."""
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "eval_spec",
+        nargs="?",
+        default=str(Path(__file__).resolve().parents[1] / "evals" / "paper_summary_preview_only.json"),
+        help="Path to an eval-pack JSON file.",
+    )
+    parser.add_argument(
+        "--artifacts-dir",
+        default="",
+        help="Optional directory for trace/checkpoint/result artifacts.",
+    )
+    args = parser.parse_args()
+
     load_dotenv(Path(__file__).resolve().parents[1] / ".env")
+    eval_spec = load_eval_spec(args.eval_spec)
 
     with tempfile.TemporaryDirectory() as tmpdir:
         checkpoint_path = Path(tmpdir) / "agoragentic_process.sqlite"
         agent = _build_agent(str(checkpoint_path))
-        tool_events: list[str] = []
-
-        agent.events.on_tool(lambda ctx: tool_events.append(ctx.get("tool_name", "")))
 
         print("Configured tools:", [tool_spec.name for tool_spec in agent.tools])
         print(f"Checkpoint store: {checkpoint_path}")
+        print(f"Eval spec: {args.eval_spec}")
 
         if not os.getenv("OPENAI_API_KEY", "").strip():
             print("OPENAI_API_KEY not set; configure it to verify tool-calling behavior via agent.run().")
             return
 
-        before_id = agent.save_checkpoint("before_process_verification")
-        print(f"Saved baseline checkpoint: {before_id}")
-
-        result = agent.run(
-            "Use agoragentic_match to preview a marketplace provider for summarizing technical "
-            "papers under $0.25. Then use agoragentic_memory_search to look for prior "
-            "summarization workflow notes. Do not execute paid actions or save new notes."
+        artifacts_dir = args.artifacts_dir or str(
+            Path.cwd() / "eval_artifacts" / eval_spec.name
         )
-
-        after_id = agent.save_checkpoint("after_process_verification")
-        print(f"Saved post-run checkpoint: {after_id}")
-
-        expected_tools = [
-            "agoragentic_match",
-            "agoragentic_memory_search",
-        ]
-        actual_tools = [tool_name for tool_name in tool_events if tool_name]
-        missing_tools = [tool_name for tool_name in expected_tools if tool_name not in actual_tools]
-        unexpected_tools = [tool_name for tool_name in actual_tools if tool_name not in expected_tools]
+        result = run_eval_spec(agent, eval_spec, artifacts_dir=artifacts_dir)
 
         print("\n=== Verification summary ===")
-        print("Expected tools:", expected_tools)
-        print("Observed tools:", actual_tools)
-        print("Missing tools:", missing_tools or "none")
-        print("Unexpected tools:", unexpected_tools or "none")
-        print("Checkpoints:", agent.list_checkpoints())
+        print("Eval:", result.spec_name)
+        print("Observed tools:", result.observed_tools)
+        print("Missing tools:", result.missing_tools or "none")
+        print("Forbidden tools used:", result.forbidden_tools_used or "none")
+        print("Unexpected tools:", result.unexpected_tools or "none")
+        print("Failures:", result.failures or "none")
+        print("Artifacts:", result.artifacts_dir)
+        print("Checkpoints:", result.checkpoints)
 
         print("\n=== Trace summary ===")
-        print(f"Trace steps: {len(result.trace)}")
-        for index, step in enumerate(result.trace, start=1):
-            step_type = getattr(step, "step_type", "unknown")
-            latency_ms = getattr(step, "latency_ms", 0.0)
-            cost_usd = getattr(step, "cost_usd", 0.0)
-            print(f"  Step {index}: {step_type}, latency={latency_ms:.1f}ms, cost=${cost_usd:.6f}")
+        print(f"Trace steps: {len(result.trace_summary)}")
+        for step in result.trace_summary:
+            print(
+                f"  Step {step['index']}: {step['step_type']}, "
+                f"latency={step['latency_ms']:.1f}ms, cost=${step['cost_usd']:.6f}"
+            )
 
         print("\n=== Agent output ===")
-        print(result.content[:1200])
-        print(f"\nTotal cost: ${result.cost:.6f}")
+        print(result.output_text[:1200])
+        if result.total_cost_usd is not None:
+            print(f"\nTotal cost: ${result.total_cost_usd:.6f}")
 
 
 if __name__ == "__main__":

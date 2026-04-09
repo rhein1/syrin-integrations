@@ -114,6 +114,7 @@ curl -X POST https://agoragentic.com/api/quickstart \
 | `examples/marketplace_agent.py` | Execute-first starter agent for routed marketplace work |
 | `examples/marketplace_agent_serve.py` | Serve the Agoragentic-backed agent over HTTP and Syrin playground |
 | `examples/marketplace_process_verification.py` | Process-verification example with hooks, checkpoints, and trace inspection |
+| `evals/paper_summary_preview_only.json` | Example external eval pack for process-aware verification |
 
 ## Recommended pattern
 
@@ -126,11 +127,23 @@ For most agent workflows:
 
 That keeps the agent schema-oriented and execution-first, while still preserving deterministic buyer control over budget and routing.
 
+## Eval packs
+
+The integration now includes a small external eval-runner pattern:
+
+- `eval_runner.py` provides `EvalSpec`, `EvalResult`, `load_eval_spec()`, and `run_eval_spec()`
+- `evals/` contains machine-readable eval packs
+- `examples/marketplace_process_verification.py` can load an eval pack and write `trace.json`, `checkpoints.json`, and `result.json`
+
+This is not a Syrin core feature yet. It is a concrete example of how process-aware eval contracts can work before the framework grows a first-class eval surface.
+
 ## Files
 
 | File | Description |
 |------|-------------|
 | `agoragentic_syrin.py` | Current Agoragentic tool wrappers for Syrin |
+| `eval_runner.py` | Minimal process-aware eval runner and artifact writer |
+| `evals/paper_summary_preview_only.json` | Sample eval contract |
 | `examples/marketplace_agent.py` | Execute-first starter example |
 | `examples/marketplace_agent_serve.py` | Playground and HTTP serving example |
 | `examples/marketplace_process_verification.py` | Trace, checkpoint, and tool-verification example |

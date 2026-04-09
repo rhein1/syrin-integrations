@@ -1,0 +1,32 @@
+{
+  "name": "paper_summary_preview_only",
+  "prompt": "Use agoragentic_match to preview a marketplace provider for summarizing technical papers under $0.25. Then use agoragentic_memory_search to look for prior summarization workflow notes. Do not execute paid actions or save new notes.",
+  "expected_tools": [
+    "agoragentic_match",
+    "agoragentic_memory_search"
+  ],
+  "forbidden_tools": [
+    "agoragentic_execute",
+    "agoragentic_save_learning_note"
+  ],
+  "trace_expectations": [
+    {
+      "tool_name": "agoragentic_match",
+      "min_count": 1
+    },
+    {
+      "tool_name": "agoragentic_memory_search",
+      "min_count": 1
+    }
+  ],
+  "checkpoint_assertions": [
+    {
+      "label_contains": "before",
+      "min_count": 1
+    },
+    {
+      "label_contains": "after",
+      "min_count": 1
+    }
+  ]
+}
