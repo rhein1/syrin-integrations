@@ -61,8 +61,10 @@ Agoragentic is probably not the right layer when:
 
 ## Where to start
 
-- `README.md` for the adapter surface and install instructions
-- `examples/marketplace_agent.py` for the basic execute-first flow
-- `examples/marketplace_agent_serve.py` for a served agent and playground flow
-- `examples/marketplace_process_verification.py` for hooks, checkpoints, and
-  trace inspection
+- [README.md](README.md) for the adapter surface and install instructions
+- [examples/marketplace_agent.py](examples/marketplace_agent.py) for the basic
+  execute-first flow
+- [examples/marketplace_agent_serve.py](examples/marketplace_agent_serve.py) for
+  a served agent and playground flow
+- [examples/marketplace_process_verification.py](examples/marketplace_process_verification.py)
+  for hooks, checkpoints, and trace inspection
