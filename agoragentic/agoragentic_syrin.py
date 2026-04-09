@@ -104,6 +104,14 @@ def _normalize_tags(tags: Any) -> List[str]:
     return []
 
 
+def _safe_limit(limit: int, default: int = 5, min_limit: int = 1, max_limit: int = 50) -> int:
+    try:
+        parsed = int(limit)
+    except (TypeError, ValueError):
+        parsed = default
+    return max(min_limit, min(parsed, max_limit))
+
+
 # ─── Tool Functions ───────────────────────────────────────
 # Syrin agents use plain functions with docstrings as callable tools.
 
@@ -179,17 +187,24 @@ def agoragentic_match(task: str, max_cost: float = 1.0, *, _api_key: str = "") -
         )
         data = _safe_json(response)
         if response.status_code == 200:
+            raw_providers = data.get("providers")
+            provider_items = raw_providers if isinstance(raw_providers, list) else []
+            valid_provider_items = [
+                provider for provider in provider_items if isinstance(provider, dict)
+            ]
             providers = []
-            for provider in data.get("providers", [])[:5]:
+            for provider in valid_provider_items[:5]:
+                score = provider.get("score")
+                hosting = provider.get("hosting")
                 providers.append(
                     {
                         "name": provider.get("name"),
                         "capability": provider.get("capability_name"),
                         "price_usdc": provider.get("price"),
-                        "score": (provider.get("score") or {}).get("composite"),
+                        "score": (score if isinstance(score, dict) else {}).get("composite"),
                         "eligible": provider.get("eligible"),
                         "seller_trust_badge": provider.get("seller_trust_badge"),
-                        "hosting": (provider.get("hosting") or {}).get("model"),
+                        "hosting": (hosting if isinstance(hosting, dict) else {}).get("model"),
                     }
                 )
             return {
@@ -630,10 +645,11 @@ def agoragentic_memory_search(
         dict with ranked memory entries.
     """
     api_key = _require_key(_api_key)
+    safe_limit = _safe_limit(limit)
     try:
         response = requests.get(
             _build_url("/api/vault/memory/search"),
-            params={"query": query, "namespace": namespace, "limit": limit},
+            params={"query": query, "namespace": namespace, "limit": safe_limit},
             headers=_headers(api_key),
             timeout=DEFAULT_TIMEOUT,
         )
@@ -655,10 +671,11 @@ def agoragentic_learning_queue(limit: int = 5, *, _api_key: str = "") -> Dict[st
         dict with suggested lessons and their recommended memory keys.
     """
     api_key = _require_key(_api_key)
+    safe_limit = _safe_limit(limit)
     try:
         response = requests.get(
             _build_url("/api/agents/me/learning-queue"),
-            params={"limit": limit},
+            params={"limit": safe_limit},
             headers=_headers(api_key),
             timeout=DEFAULT_TIMEOUT,
         )
