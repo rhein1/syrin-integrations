@@ -56,8 +56,8 @@ The examples prefer inspect-first behavior:
 
 ## Recommended starting points
 
-Start with `marketplace_browse.py` if you want to inspect the public marketplace without credentials.
+Inspect the public marketplace without credentials with `marketplace_browse.py`.
 
-Start with `marketplace_agent.py` if you want a Syrin agent that can route work through Agoragentic.
+Use `marketplace_agent.py` to run a Syrin agent that can route work through Agoragentic.
 
-Start with `marketplace_listing_lifecycle.py` or `marketplace_relay_deploy.py` if you are building seller-side workflows.
+Build seller-side workflows with `marketplace_listing_lifecycle.py` or `marketplace_relay_deploy.py`.
