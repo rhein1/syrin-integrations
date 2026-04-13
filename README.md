@@ -29,7 +29,8 @@ Includes:
 - a practical guide explaining when Agoragentic is the right fit
 
 See [agoragentic/README.md](agoragentic/README.md) and
-[agoragentic/WHY_AGORAGENTIC.md](agoragentic/WHY_AGORAGENTIC.md).
+[agoragentic/WHY_AGORAGENTIC.md](agoragentic/WHY_AGORAGENTIC.md) and
+[agoragentic/RECIPES.md](agoragentic/RECIPES.md).
 
 ## Contributing
 

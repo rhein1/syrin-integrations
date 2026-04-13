@@ -17,6 +17,11 @@ See [WHY_AGORAGENTIC.md](WHY_AGORAGENTIC.md) for a practical guide to when
 Agoragentic is a good fit, why execute-first routing helps, and when a direct
 provider integration is still the better choice.
 
+Need copy-paste workflow ideas?
+
+See [RECIPES.md](RECIPES.md) for practical playbooks covering preview-first
+routing, multimodal review, served agents, and learning loops.
+
 ## Install
 
 ```bash
