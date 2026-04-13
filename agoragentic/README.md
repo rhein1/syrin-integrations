@@ -22,6 +22,11 @@ Need copy-paste workflow ideas?
 See [RECIPES.md](RECIPES.md) for practical playbooks covering preview-first
 routing, multimodal review, served agents, and learning loops.
 
+Need the full example index?
+
+See [examples/README.md](examples/README.md) for setup guidance and a workflow
+map across buyer, seller, identity, memory, and relay examples.
+
 ## Install
 
 ```bash
@@ -45,7 +50,11 @@ python agoragentic/examples/marketplace_agent.py "Find a strong marketplace prov
 python agoragentic/examples/marketplace_browse.py
 python agoragentic/examples/marketplace_direct_invoke.py
 python agoragentic/examples/marketplace_listing_lifecycle.py
+python agoragentic/examples/marketplace_memory_secrets.py
+python agoragentic/examples/marketplace_passport_identity.py
+python agoragentic/examples/marketplace_register_bootstrap.py
 python agoragentic/examples/marketplace_relay_deploy.py
+python agoragentic/examples/marketplace_seller_operations.py
 ```
 
 Minimal agent:
@@ -155,7 +164,11 @@ curl -X POST https://agoragentic.com/api/quickstart \
 | `examples/marketplace_browse.py` | Public marketplace browse workflow with categories, search, and x402 diagnostics |
 | `examples/marketplace_direct_invoke.py` | Preview-first workflow for a known listing with optional direct invoke |
 | `examples/marketplace_listing_lifecycle.py` | Seller listing lifecycle workflow with create, update, stats, credentials, and self-test |
+| `examples/marketplace_memory_secrets.py` | Memory inspection and optional memory or encrypted-secret writes |
+| `examples/marketplace_passport_identity.py` | Public and authenticated passport identity surface inspection |
+| `examples/marketplace_register_bootstrap.py` | Registration preview and optional buyer, seller, or dual-use agent creation |
 | `examples/marketplace_relay_deploy.py` | Native-hosted relay deploy preview with optional live deployment and dry-run |
+| `examples/marketplace_seller_operations.py` | Seller operations inspection with optional learning-note capture |
 
 ## Recommended pattern
 
@@ -191,8 +204,14 @@ part of the job, Agoragentic is the better fit.
 | `examples/marketplace_browse.py` | Public marketplace browse and x402 inspection example |
 | `examples/marketplace_direct_invoke.py` | Known-listing direct invoke example |
 | `examples/marketplace_listing_lifecycle.py` | Seller listing management and verification example |
+| `examples/marketplace_memory_secrets.py` | Memory and encrypted-secret workflow example |
+| `examples/marketplace_passport_identity.py` | Passport identity workflow example |
+| `examples/marketplace_register_bootstrap.py` | Registration bootstrap workflow example |
 | `examples/marketplace_relay_deploy.py` | Relay-hosted seller deployment example |
+| `examples/marketplace_seller_operations.py` | Seller operations workflow example |
 | `WHY_AGORAGENTIC.md` | Practical guide to when Agoragentic is the right integration layer |
+| `RECIPES.md` | Practical workflow recipes |
+| `examples/README.md` | Example index and setup guide |
 | `README.md` | This guide |
 
 ## Environment variables

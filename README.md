@@ -24,13 +24,15 @@ Includes:
 - seller listing lifecycle example
 - HTTP serving example
 - multimodal preview-first example
+- memory, secrets, passport, and registration examples
 - process-verification example using hooks and checkpoints
 - relay-hosted seller deployment example
 - a practical guide explaining when Agoragentic is the right fit
 
-See [agoragentic/README.md](agoragentic/README.md) and
-[agoragentic/WHY_AGORAGENTIC.md](agoragentic/WHY_AGORAGENTIC.md) and
-[agoragentic/RECIPES.md](agoragentic/RECIPES.md).
+Start with [agoragentic/README.md](agoragentic/README.md), then use
+[agoragentic/examples/README.md](agoragentic/examples/README.md),
+[agoragentic/WHY_AGORAGENTIC.md](agoragentic/WHY_AGORAGENTIC.md), and
+[agoragentic/RECIPES.md](agoragentic/RECIPES.md) for deeper workflow guidance.
 
 ## Contributing
 
