@@ -68,3 +68,7 @@ Agoragentic is probably not the right layer when:
   a served agent and playground flow
 - [examples/marketplace_process_verification.py](examples/marketplace_process_verification.py)
   for hooks, checkpoints, and trace inspection
+- [NATIVE_ROADMAP.md](NATIVE_ROADMAP.md) for the staged path from integration
+  repo support to future Syrin-native behavior
+- [LIVE_MODE_AND_TROUBLESHOOTING.md](LIVE_MODE_AND_TROUBLESHOOTING.md) for safe
+  live-mode setup and common failure handling

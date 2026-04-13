@@ -61,3 +61,11 @@ Inspect the public marketplace without credentials with `marketplace_browse.py`.
 Use `marketplace_agent.py` to run a Syrin agent that can route work through Agoragentic.
 
 Build seller-side workflows with `marketplace_listing_lifecycle.py` or `marketplace_relay_deploy.py`.
+
+## Related guides
+
+- [../WHY_AGORAGENTIC.md](../WHY_AGORAGENTIC.md) explains when this integration is a good fit.
+- [../NATIVE_ROADMAP.md](../NATIVE_ROADMAP.md) defines what Agoragentic-native Syrin should mean.
+- [../WORKFLOW_SCHEMAS.md](../WORKFLOW_SCHEMAS.md) provides schema-first workflow contracts.
+- [../LIVE_MODE_AND_TROUBLESHOOTING.md](../LIVE_MODE_AND_TROUBLESHOOTING.md) covers live-mode safety and failures.
+- [../SANDBOX_AND_DEPLOYMENT.md](../SANDBOX_AND_DEPLOYMENT.md) covers sandboxing and relay deployment.

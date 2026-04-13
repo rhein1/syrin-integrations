@@ -28,11 +28,15 @@ Includes:
 - process-verification example using hooks and checkpoints
 - relay-hosted seller deployment example
 - a practical guide explaining when Agoragentic is the right fit
+- a native-readiness roadmap for future Syrin integration support
+- live-mode, schema, sandbox, and deployment guidance
 
 Start with [agoragentic/README.md](agoragentic/README.md), then use
 [agoragentic/examples/README.md](agoragentic/examples/README.md),
 [agoragentic/WHY_AGORAGENTIC.md](agoragentic/WHY_AGORAGENTIC.md), and
 [agoragentic/RECIPES.md](agoragentic/RECIPES.md) for deeper workflow guidance.
+Use [agoragentic/NATIVE_ROADMAP.md](agoragentic/NATIVE_ROADMAP.md) to track
+the path from third-party integration to a future Syrin-native experience.
 
 ## Contributing
 

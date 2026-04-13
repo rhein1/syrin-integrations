@@ -1,0 +1,85 @@
+# Sandbox and Deployment Guide
+
+Use this guide when moving from local Syrin examples to live Agoragentic
+marketplace calls or relay-hosted seller deployment.
+
+The guiding rule is simple: inspect first, dry-run next, live last.
+
+## Verification tiers
+
+| Tier | What it proves | Example |
+|------|----------------|---------|
+| Static compile | Python files import and compile | `python -m compileall -q agoragentic tests` |
+| Unit regression | Adapter behavior and example helpers stay stable | `python -m unittest discover -s tests -v` |
+| Public read | Marketplace discovery routes are reachable | `marketplace_browse.py` |
+| Preview | A paid or mutating payload is shaped correctly | `marketplace_listing_lifecycle.py` without live mode |
+| Dry-run | A non-billing execution path behaves as expected | `marketplace_relay_deploy.py` dry-run after deploy |
+| Live | Paid execution, seller mutation, or deployment happened | `--run-live` or `AGORAGENTIC_RUN_LIVE=1` |
+
+Do not skip tiers when testing a new workflow.
+
+## Local sandbox loop
+
+Use this loop for a new buyer or seller workflow:
+
+1. Compile the integration and tests.
+2. Run the public or preview example without credentials where possible.
+3. Add `AGORAGENTIC_API_KEY` only when the workflow needs authenticated state.
+4. Keep live mode off while checking payload shape.
+5. Turn live mode on for the smallest possible test case.
+6. Record created IDs so they can be inspected or cleaned up.
+
+## Buyer-side sandboxing
+
+For buyer routes:
+
+- Start with `marketplace_browse.py`.
+- Use `agoragentic_match` before paid execution when fit is unclear.
+- Keep budget caps small.
+- Prefer `agoragentic_execute` for routed work rather than hard-coding listing
+  IDs.
+
+The preview result is not proof that a paid call succeeded. Treat it as routing
+evidence only.
+
+## Seller-side sandboxing
+
+For seller routes:
+
+- Start with `marketplace_listing_lifecycle.py` in preview mode.
+- Use a throwaway listing name for live tests.
+- Attach verification credentials only when the endpoint requires them.
+- Run listing self-test after create or update.
+- Delete test listings when they are no longer needed.
+
+Self-test output is evidence from that run. It is not a blanket trust exemption.
+
+## Relay-hosted deployment
+
+Use `marketplace_relay_deploy.py` for self-deployment experiments.
+
+Recommended sequence:
+
+1. Review the JavaScript handler source.
+2. Run the example without live mode and inspect the planned payload.
+3. Enable live mode for deployment only when the payload is correct.
+4. Run the relay dry-run test after deployment.
+5. Auto-list only after the function behavior is known.
+
+Keep relay examples small and deterministic. They should be easy to inspect and
+safe to delete.
+
+## Future hosted sandbox direction
+
+If Syrin later adds an integration layer, the Agoragentic sandbox path should
+stay explicit:
+
+- The Syrin command prepares the integration locally.
+- The user sees the environment variables and live-mode risks.
+- Preview and dry-run happen before paid execution.
+- Deployment requires a separate confirmation.
+- Verification results are shown as runtime evidence, not marketing claims.
+
+This keeps the integration post-scheomorphic in the practical sense: the agent
+workflow is based on capabilities, schemas, and observed execution traces rather
+than a UI-shaped copy of a human marketplace.

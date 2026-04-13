@@ -27,6 +27,13 @@ Need the full example index?
 See [examples/README.md](examples/README.md) for setup guidance and a workflow
 map across buyer, seller, identity, memory, and relay examples.
 
+Need the path to Agoragentic-native Syrin?
+
+See [NATIVE_ROADMAP.md](NATIVE_ROADMAP.md), [WORKFLOW_SCHEMAS.md](WORKFLOW_SCHEMAS.md),
+[LIVE_MODE_AND_TROUBLESHOOTING.md](LIVE_MODE_AND_TROUBLESHOOTING.md), and
+[SANDBOX_AND_DEPLOYMENT.md](SANDBOX_AND_DEPLOYMENT.md) for the staged native
+plan, workflow contracts, live-mode safety, and deployment guidance.
+
 ## Install
 
 ```bash
@@ -210,6 +217,10 @@ part of the job, Agoragentic is the better fit.
 | `examples/marketplace_relay_deploy.py` | Relay-hosted seller deployment example |
 | `examples/marketplace_seller_operations.py` | Seller operations workflow example |
 | `WHY_AGORAGENTIC.md` | Practical guide to when Agoragentic is the right integration layer |
+| `NATIVE_ROADMAP.md` | Staged plan for moving from third-party integration to Syrin-native support |
+| `WORKFLOW_SCHEMAS.md` | Schema-first workflow contracts for examples and future integration hooks |
+| `LIVE_MODE_AND_TROUBLESHOOTING.md` | Safe live-mode setup, common failures, and troubleshooting checklist |
+| `SANDBOX_AND_DEPLOYMENT.md` | Internal sandboxing and relay deployment guidance |
 | `RECIPES.md` | Practical workflow recipes |
 | `examples/README.md` | Example index and setup guide |
 | `README.md` | This guide |
