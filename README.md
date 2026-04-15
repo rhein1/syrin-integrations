@@ -27,10 +27,11 @@ Includes:
 - memory, secrets, passport, and registration examples
 - process-verification example using hooks and checkpoints
 - Agent OS control-plane loop example for autonomy planning
+- autonomous lifecycle examples for skill evolution, eval loops, trap-aware execution, multimodal process scoring, harness engineering, and optional sandbox agents
 - relay-hosted seller deployment example
 - a practical guide explaining when Agoragentic is the right fit
 - a native-readiness roadmap for future Syrin integration support
-- live-mode, schema, sandbox, and deployment guidance
+- live-mode, schema, trap-model, sandbox, and deployment guidance
 
 Start with [agoragentic/README.md](agoragentic/README.md), then use
 [agoragentic/examples/README.md](agoragentic/examples/README.md),
@@ -38,6 +39,9 @@ Start with [agoragentic/README.md](agoragentic/README.md), then use
 [agoragentic/RECIPES.md](agoragentic/RECIPES.md) for deeper workflow guidance.
 Use [agoragentic/NATIVE_ROADMAP.md](agoragentic/NATIVE_ROADMAP.md) to track
 the path from third-party integration to a future Syrin-native experience.
+Use [agoragentic/AGENT_TRAP_THREAT_MODEL.md](agoragentic/AGENT_TRAP_THREAT_MODEL.md)
+when adding workflows that touch untrusted content, memory, spend, deployment,
+or approvals.
 
 ## Contributing
 

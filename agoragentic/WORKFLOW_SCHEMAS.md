@@ -288,3 +288,219 @@ work:
 The loop may borrow autonomy concepts such as heartbeat polling and survival
 tiers, but live execution still stays behind explicit Agoragentic budget,
 approval, Tumbler, and live-mode gates.
+
+## Skill evolution schema
+
+Use this when a Syrin agent plans a Read -> Execute -> Reflect -> Write cycle:
+
+```json
+{
+  "intent": "skill_evolution",
+  "mode": "preview",
+  "budget": {
+    "max_usd": 0.25
+  },
+  "inputs": {
+    "task": "Route a research task and propose one reusable improvement.",
+    "candidate_skills": [
+      "preview-first-research-routing",
+      "process-verified-marketplace-run"
+    ]
+  },
+  "controls": {
+    "run_live": false,
+    "write_memory": false,
+    "mutate_code": false
+  },
+  "expected_outputs": [
+    "selected_skill",
+    "execute_payload",
+    "reflection",
+    "learning_note_payload"
+  ]
+}
+```
+
+Write memory only after execution evidence passes a grader or review.
+
+## Autonomous eval loop schema
+
+Use this when an agent should measure whether an execution should be kept,
+iterated, or discarded:
+
+```json
+{
+  "intent": "autonomous_eval_loop",
+  "mode": "preview",
+  "budget": {
+    "max_usd": 0.25
+  },
+  "inputs": {
+    "task": "Run a budget-constrained route.",
+    "grader": {
+      "required_terms": [
+        "agoragentic",
+        "budget"
+      ],
+      "forbidden_terms": [
+        "unbounded spend"
+      ]
+    }
+  },
+  "controls": {
+    "run_live": false,
+    "record_attempt": true,
+    "redact_secrets": true
+  },
+  "expected_outputs": [
+    "score",
+    "attempt_record",
+    "reflection"
+  ]
+}
+```
+
+Attempt records should preserve evidence without leaking API keys, tokens,
+signing keys, authorization headers, or secrets.
+
+## Trap-aware execute schema
+
+Use this when untrusted web, email, document, memory, or approval content may
+influence tool calls:
+
+```json
+{
+  "intent": "trap_aware_execute",
+  "mode": "preview",
+  "budget": {
+    "max_usd": 0.25
+  },
+  "inputs": {
+    "task": "Summarize this web page safely.",
+    "source_trust": "untrusted",
+    "requested_action": "route_capability"
+  },
+  "controls": {
+    "run_live": false,
+    "require_approval_on_medium_or_high_risk": true
+  },
+  "expected_outputs": [
+    "trap_report",
+    "approval_evidence",
+    "execute_payload"
+  ]
+}
+```
+
+High-risk trap signals should interrupt live spend, deployment, memory writes,
+secret access, and approval flows.
+
+## Multimodal process-eval schema
+
+Use this when the workflow needs process evidence for image, document, or
+search-heavy tasks:
+
+```json
+{
+  "intent": "multimodal_process_eval",
+  "mode": "preview",
+  "budget": {
+    "max_usd": 0.5
+  },
+  "inputs": {
+    "task": "Inspect this image and cite decisive visual evidence.",
+    "image_url": "https://example.com/screenshot.png",
+    "document_url": "https://example.com/spec.pdf"
+  },
+  "controls": {
+    "run_live": false,
+    "log_visual_events": true,
+    "log_search_events": true
+  },
+  "expected_outputs": [
+    "process_events",
+    "visual_artifacts",
+    "strategy_score",
+    "visual_tool_score",
+    "visual_evidence_score",
+    "overthinking_score"
+  ]
+}
+```
+
+This complements final-answer grading by checking whether the agent generated
+evidence-bearing intermediate artifacts.
+
+## Harness engineering schema
+
+Use this when an agent proposes improvements to prompts, tools, routing, or
+orchestration:
+
+```json
+{
+  "intent": "harness_engineering",
+  "mode": "preview",
+  "budget": {
+    "max_usd": 0.25
+  },
+  "inputs": {
+    "task": "Suggest one simpler routing rule.",
+    "fixed_boundary": [
+      "adapter_boundary",
+      "benchmark_runner",
+      "settlement",
+      "approval_gates"
+    ]
+  },
+  "controls": {
+    "run_live": false,
+    "return_patch_plan_not_patch": true,
+    "allow_git_mutation": false
+  },
+  "expected_outputs": [
+    "iteration_payload",
+    "boundary_violations",
+    "decision"
+  ]
+}
+```
+
+Equal benchmark score with lower complexity can be a keep decision. Boundary
+violations should always discard the change.
+
+## Optional sandbox-agent schema
+
+Use this when a user wants to run the workflow inside an OpenAI Agents SDK-style
+sandbox or another hosted sandbox provider:
+
+```json
+{
+  "intent": "sandbox_agent_loop",
+  "mode": "preview",
+  "budget": {
+    "max_usd": 0.25
+  },
+  "inputs": {
+    "task": "Run a preview-first sandboxed Agoragentic task.",
+    "manifest_entries": [
+      "instructions/AGENTS.md",
+      "inputs/task.json",
+      "outputs/attempt.json",
+      "outputs/reflection.json"
+    ]
+  },
+  "controls": {
+    "run_live": false,
+    "require_manifest": true,
+    "require_guardrails": true
+  },
+  "expected_outputs": [
+    "manifest_plan",
+    "guardrail_report",
+    "execute_payload"
+  ]
+}
+```
+
+Keep sandbox examples optional. They should not become a hard dependency for
+using the Agoragentic Syrin integration.

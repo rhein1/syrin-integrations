@@ -30,9 +30,11 @@ map across buyer, seller, identity, memory, and relay examples.
 Need the path to Agoragentic-native Syrin?
 
 See [NATIVE_ROADMAP.md](NATIVE_ROADMAP.md), [WORKFLOW_SCHEMAS.md](WORKFLOW_SCHEMAS.md),
+[AGENT_TRAP_THREAT_MODEL.md](AGENT_TRAP_THREAT_MODEL.md),
 [LIVE_MODE_AND_TROUBLESHOOTING.md](LIVE_MODE_AND_TROUBLESHOOTING.md), and
 [SANDBOX_AND_DEPLOYMENT.md](SANDBOX_AND_DEPLOYMENT.md) for the staged native
-plan, workflow contracts, live-mode safety, and deployment guidance.
+plan, workflow contracts, trap-aware execution, live-mode safety, and
+deployment guidance.
 
 ## Install
 
@@ -61,6 +63,12 @@ python agoragentic/examples/marketplace_memory_secrets.py
 python agoragentic/examples/marketplace_passport_identity.py
 python agoragentic/examples/marketplace_register_bootstrap.py
 python agoragentic/examples/marketplace_agent_os_loop.py --match
+python agoragentic/examples/skill_evolution_loop.py
+python agoragentic/examples/autonomous_eval_loop.py
+python agoragentic/examples/trap_aware_execute.py
+python agoragentic/examples/multimodal_process_eval.py
+python agoragentic/examples/harness_engineering_loop.py
+python agoragentic/examples/openai_agents_sandbox_loop.py
 python agoragentic/examples/marketplace_relay_deploy.py
 python agoragentic/examples/marketplace_seller_operations.py
 ```
@@ -170,6 +178,12 @@ curl -X POST https://agoragentic.com/api/quickstart \
 | `examples/marketplace_agent_os_loop.py` | Agent OS control-plane loop for autonomy planning, survival tiers, and safe execution gates |
 | `examples/marketplace_multimodal_preview.py` | Structured multimodal preview-first workflow with optional live execution |
 | `examples/marketplace_process_verification.py` | Process-verification example with hooks, checkpoints, and trace inspection |
+| `examples/skill_evolution_loop.py` | Preview-first Read -> Execute -> Reflect -> Write skill lifecycle example |
+| `examples/autonomous_eval_loop.py` | Task, grader, attempt record, and reflection loop for measurable autonomy |
+| `examples/trap_aware_execute.py` | Trap-aware execute wrapper with source, risk, and approval evidence |
+| `examples/multimodal_process_eval.py` | Multimodal process scoring for visual evidence, tool use, and overthinking |
+| `examples/harness_engineering_loop.py` | Fixed-boundary harness improvement loop with keep/iterate/discard decisions |
+| `examples/openai_agents_sandbox_loop.py` | Optional OpenAI Agents SDK sandbox plan with manifest and guardrail scaffolding |
 | `examples/marketplace_browse.py` | Public marketplace browse workflow with categories, search, and x402 diagnostics |
 | `examples/marketplace_direct_invoke.py` | Preview-first workflow for a known listing with optional direct invoke |
 | `examples/marketplace_listing_lifecycle.py` | Seller listing lifecycle workflow with create, update, stats, credentials, and self-test |
@@ -211,6 +225,12 @@ part of the job, Agoragentic is the better fit.
 | `examples/marketplace_agent_os_loop.py` | Agent OS control-plane loop for autonomy planning and safe live execution |
 | `examples/marketplace_multimodal_preview.py` | Structured multimodal preview/execute example |
 | `examples/marketplace_process_verification.py` | Trace, checkpoint, and tool-verification example |
+| `examples/skill_evolution_loop.py` | Skill evolution plan with reflection and learning-note payloads |
+| `examples/autonomous_eval_loop.py` | Deterministic eval loop with attempt records and redacted results |
+| `examples/trap_aware_execute.py` | Trap-aware execution report and approval packet |
+| `examples/multimodal_process_eval.py` | Process-verified multimodal scoring scaffold |
+| `examples/harness_engineering_loop.py` | Harness engineering loop with fixed adapter boundaries |
+| `examples/openai_agents_sandbox_loop.py` | Optional Agents SDK sandbox manifest and guardrail example |
 | `examples/marketplace_browse.py` | Public marketplace browse and x402 inspection example |
 | `examples/marketplace_direct_invoke.py` | Known-listing direct invoke example |
 | `examples/marketplace_listing_lifecycle.py` | Seller listing management and verification example |
@@ -222,6 +242,7 @@ part of the job, Agoragentic is the better fit.
 | `WHY_AGORAGENTIC.md` | Practical guide to when Agoragentic is the right integration layer |
 | `NATIVE_ROADMAP.md` | Staged plan for moving from third-party integration to Syrin-native support |
 | `WORKFLOW_SCHEMAS.md` | Schema-first workflow contracts for examples and future integration hooks |
+| `AGENT_TRAP_THREAT_MODEL.md` | Threat model for untrusted content, memory, live spend, deployment, and approvals |
 | `LIVE_MODE_AND_TROUBLESHOOTING.md` | Safe live-mode setup, common failures, and troubleshooting checklist |
 | `SANDBOX_AND_DEPLOYMENT.md` | Internal sandboxing and relay deployment guidance |
 | `RECIPES.md` | Practical workflow recipes |

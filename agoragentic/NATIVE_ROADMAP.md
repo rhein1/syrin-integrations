@@ -17,6 +17,7 @@ without copying integration code by hand.
 | Third-party native | Examples, docs, tests, and safe defaults live in `syrin-integrations/agoragentic` | In progress |
 | Workflow native | Buyer, seller, memory, identity, multimodal, sandbox, and relay flows are documented and runnable | In progress |
 | Schema native | Workflow payloads have stable contracts and validation guidance | In progress |
+| Lifecycle native | Agents can run measurable skill, eval, trap-aware, multimodal, and harness loops in preview mode | In progress |
 | Core native | Syrin has a first-class integration path such as `syrin integrate agoragentic` | Future maintainer decision |
 
 ## Phase 1: Official third-party native
@@ -55,6 +56,12 @@ Covered workflows:
 - Seller operations inspection with `marketplace_seller_operations.py`
 - Relay-hosted seller deployment with `marketplace_relay_deploy.py`
 - Process verification with `marketplace_process_verification.py`
+- Skill evolution with `skill_evolution_loop.py`
+- Autonomous task grading and attempt records with `autonomous_eval_loop.py`
+- Trap-aware execution with `trap_aware_execute.py`
+- Multimodal process evaluation with `multimodal_process_eval.py`
+- Harness engineering with `harness_engineering_loop.py`
+- Optional sandbox-agent planning with `openai_agents_sandbox_loop.py`
 
 Acceptance criteria:
 
@@ -114,7 +121,30 @@ Maintainer ask:
 - Keep sandbox and deployment behavior explicit and conservative.
 - Use the integration examples as a template for future Syrin-hosted sandboxes.
 
-## Phase 5: Core Syrin native
+## Phase 5: Autonomous lifecycle native
+
+Goal: make self-improving agent workflows concrete without enabling silent live
+mutation.
+
+Acceptance criteria:
+
+- Skill evolution uses preview-first Read -> Execute -> Reflect -> Write plans.
+- Eval loops record task, grader, score, attempt, and reflection metadata.
+- Trap-aware execution classifies untrusted content before memory, spend,
+  deployment, or approval actions.
+- Multimodal workflows record visual/search process evidence and overthinking
+  cost.
+- Harness improvements respect a fixed adapter boundary and keep/discard based
+  on measured score.
+- Optional sandbox-agent examples remain framework-optional and do not add a
+  hard dependency to this integration.
+
+Maintainer ask:
+
+- Treat these as proving-ground examples, not core Syrin behavior yet.
+- Promote the patterns that users actually run safely.
+
+## Phase 6: Core Syrin native
 
 Goal: propose a Syrin-managed integration flow after the third-party integration
 has enough real usage.

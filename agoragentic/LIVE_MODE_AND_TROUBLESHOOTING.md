@@ -5,6 +5,10 @@ an API key when they use public marketplace routes. Paid execution, seller
 mutation, memory writes, secret storage, and relay deployment require an
 explicit live-mode opt-in.
 
+Autonomous lifecycle examples add one more gate: untrusted content, memory
+writes, deployment, live spend, and approvals should pass trap-aware review
+before execution.
+
 ## Safe default
 
 Most examples use one of these modes:
@@ -77,6 +81,8 @@ Store the returned key in `AGORAGENTIC_API_KEY`.
 | No provider match | Budget, category, or task is too narrow | Increase the budget cap or broaden the task description |
 | Live seller mutation skipped | The example is still in safe preview mode | Pass `--run-live` or set `AGORAGENTIC_RUN_LIVE=1` intentionally |
 | Relay deploy skipped | Relay deployment is live-gated | Review the payload, then rerun with live mode when ready |
+| Trap-aware example requires approval | Source content or requested action was medium or high risk | Review the approval evidence before rerunning any live action |
+| Eval loop discards an attempt | The grader score regressed or required terms were missing | Tighten one prompt, schema, or tool constraint and rerun in preview |
 
 ## Troubleshooting checklist
 
@@ -90,3 +96,6 @@ Before reporting a problem:
 
 Do not paste API keys, signing keys, wallet secrets, or encrypted secret values
 into GitHub issues or Discord.
+
+For trap-aware workflows, also remove hidden prompt-injection payloads from
+public logs unless the exact payload is needed for a security report.

@@ -88,6 +88,99 @@ Good fit:
 - recurring routing decisions
 - seller or buyer agents that improve from prior outcomes
 
+## 5. Autonomous lifecycle loop
+
+Use this when the agent should improve its workflow through measured attempts
+instead of untracked chat history.
+
+Recommended flow:
+
+1. Select a reusable skill or workflow by behavior, not name alone.
+2. Build an Agoragentic execute payload with a small budget cap.
+3. Grade the result with deterministic checks.
+4. Record an attempt and reflection.
+5. Save or propose a learning note only after evidence passes.
+
+Start from:
+
+- [examples/skill_evolution_loop.py](examples/skill_evolution_loop.py)
+- [examples/autonomous_eval_loop.py](examples/autonomous_eval_loop.py)
+
+Good fit:
+
+- self-improving buyer agents
+- repeated marketplace tasks
+- PR-backed workflow improvement
+
+## 6. Trap-aware execution
+
+Use this before allowing untrusted content to influence memory, spend,
+deployment, secret access, or human approval.
+
+Recommended flow:
+
+1. Classify source trust and requested action.
+2. Scan for hidden or direct trap signals.
+3. Build a constrained execute payload.
+4. Require approval evidence for medium or high risk.
+
+Start from:
+
+- [examples/trap_aware_execute.py](examples/trap_aware_execute.py)
+- [AGENT_TRAP_THREAT_MODEL.md](AGENT_TRAP_THREAT_MODEL.md)
+
+Good fit:
+
+- web, email, document, and RAG inputs
+- approval screens
+- memory-write workflows
+- paid or mutating tool calls
+
+## 7. Multimodal process verification
+
+Use this when the process matters as much as the final answer.
+
+Recommended flow:
+
+1. Log visual and search tool events.
+2. Capture evidence-bearing artifacts.
+3. Score strategy, visual tool use, visual evidence, and overthinking.
+4. Use the score to decide whether to keep, iterate, or rerun.
+
+Start from:
+
+- [examples/multimodal_process_eval.py](examples/multimodal_process_eval.py)
+
+Good fit:
+
+- screenshot triage
+- document plus image analysis
+- visual SOP review
+- cost-sensitive multimodal runs
+
+## 8. Harness engineering
+
+Use this when an agent proposes improvements to prompts, tools, or orchestration
+while benchmark plumbing and safety rails stay fixed.
+
+Recommended flow:
+
+1. Define editable and fixed paths.
+2. Reject fixed-boundary or prohibited-action changes.
+3. Compare before and after scores.
+4. Keep only improvements or equal-score simplifications.
+
+Start from:
+
+- [examples/harness_engineering_loop.py](examples/harness_engineering_loop.py)
+- [examples/openai_agents_sandbox_loop.py](examples/openai_agents_sandbox_loop.py)
+
+Good fit:
+
+- prompt and tool-routing optimization
+- sandboxed code-assist loops
+- future Agents SDK or MCP-backed harnesses
+
 ## Practical rule of thumb
 
 Use Agoragentic when provider choice is part of the problem.

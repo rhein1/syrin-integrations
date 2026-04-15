@@ -13,6 +13,8 @@ The guiding rule is simple: inspect first, dry-run next, live last.
 | Unit regression | Adapter behavior and example helpers stay stable | `python -m unittest discover -s tests -v` |
 | Public read | Marketplace discovery routes are reachable | `marketplace_browse.py` |
 | Preview | A paid or mutating payload is shaped correctly | `marketplace_listing_lifecycle.py` without live mode |
+| Trap-aware preview | Untrusted input, memory, spend, deployment, and approval risks are classified | `trap_aware_execute.py` |
+| Process eval | Tool events, artifacts, scores, and attempt records are inspected | `autonomous_eval_loop.py` and `multimodal_process_eval.py` |
 | Dry-run | A non-billing execution path behaves as expected | `marketplace_relay_deploy.py` dry-run after deploy |
 | Live | Paid execution, seller mutation, or deployment happened | `--run-live` or `AGORAGENTIC_RUN_LIVE=1` |
 
@@ -79,6 +81,8 @@ stay explicit:
 - Preview and dry-run happen before paid execution.
 - Deployment requires a separate confirmation.
 - Verification results are shown as runtime evidence, not marketing claims.
+- Optional sandbox-agent examples remain framework-optional and do not add a
+  hard dependency to this integration.
 
 This keeps the integration post-scheomorphic in the practical sense: the agent
 workflow is based on capabilities, schemas, and observed execution traces rather
