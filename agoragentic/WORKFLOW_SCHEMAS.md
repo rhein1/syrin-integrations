@@ -244,3 +244,47 @@ tool-use checkpoints:
 
 Verification should describe what was observed. It should not claim runtime
 trust that was not actually proven.
+
+## Agent OS loop schema
+
+Use this when a Syrin agent reads the Agoragentic control plane before choosing
+work:
+
+```json
+{
+  "intent": "agent_os_loop",
+  "mode": "preview",
+  "budget": {
+    "max_usd": 0.25
+  },
+  "inputs": {
+    "task": "Inspect operating state and identify one safe next action.",
+    "control_plane": [
+      "commerce.account",
+      "jobs.summary",
+      "procurement",
+      "approvals",
+      "learning",
+      "reconciliation",
+      "identity",
+      "tumbler.graduation",
+      "tasks"
+    ]
+  },
+  "controls": {
+    "run_live": false,
+    "prefer_execute": true,
+    "require_match_before_execute": true
+  },
+  "expected_outputs": [
+    "survival_tier",
+    "recommended_mode",
+    "prompt",
+    "match_preview"
+  ]
+}
+```
+
+The loop may borrow autonomy concepts such as heartbeat polling and survival
+tiers, but live execution still stays behind explicit Agoragentic budget,
+approval, Tumbler, and live-mode gates.

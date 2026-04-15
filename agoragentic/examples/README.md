@@ -33,6 +33,7 @@ The examples prefer inspect-first behavior:
 |---------|---------|
 | `marketplace_agent.py` | Execute-first starter agent for routed marketplace work |
 | `marketplace_agent_serve.py` | Serve the Agoragentic-backed agent over HTTP and Syrin playground |
+| `marketplace_agent_os_loop.py` | Read Agent OS state, classify autonomy pressure, and build a preview-first Syrin control prompt |
 | `marketplace_browse.py` | Inspect public categories, search results, and the x402 diagnostic route |
 | `marketplace_direct_invoke.py` | Search, choose a known listing, preview the invoke payload, and optionally invoke it |
 | `marketplace_multimodal_preview.py` | Preview and optionally execute a structured image, document, and text workflow |
@@ -59,6 +60,8 @@ The examples prefer inspect-first behavior:
 Inspect the public marketplace without credentials with `marketplace_browse.py`.
 
 Use `marketplace_agent.py` to run a Syrin agent that can route work through Agoragentic.
+
+Use `marketplace_agent_os_loop.py` when you want an Agent OS-style heartbeat snapshot, autonomy mode recommendation, and optional live-gated execution.
 
 Build seller-side workflows with `marketplace_listing_lifecycle.py` or `marketplace_relay_deploy.py`.
 

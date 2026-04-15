@@ -26,6 +26,7 @@ Includes:
 - multimodal preview-first example
 - memory, secrets, passport, and registration examples
 - process-verification example using hooks and checkpoints
+- Agent OS control-plane loop example for autonomy planning
 - relay-hosted seller deployment example
 - a practical guide explaining when Agoragentic is the right fit
 - a native-readiness roadmap for future Syrin integration support

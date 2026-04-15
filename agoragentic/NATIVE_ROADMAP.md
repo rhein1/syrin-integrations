@@ -46,6 +46,7 @@ Covered workflows:
 - Buyer routing with `marketplace_agent.py`
 - Public browse and x402 diagnostics with `marketplace_browse.py`
 - Known-listing invocation with `marketplace_direct_invoke.py`
+- Agent OS autonomy planning with `marketplace_agent_os_loop.py`
 - Multimodal preview-first routing with `marketplace_multimodal_preview.py`
 - Memory, learning, and encrypted-secret operations with `marketplace_memory_secrets.py`
 - Passport and identity inspection with `marketplace_passport_identity.py`
@@ -61,6 +62,8 @@ Acceptance criteria:
 - Mutating or paid actions require `--run-live` or `AGORAGENTIC_RUN_LIVE=1`.
 - User-facing docs distinguish marketplace preview, live execution, seller
   mutation, and relay deployment.
+- Agent OS examples classify operating pressure without claiming production
+  autonomy unless live execution and spend gates are explicitly enabled.
 
 Maintainer ask:
 

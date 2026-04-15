@@ -60,6 +60,7 @@ python agoragentic/examples/marketplace_listing_lifecycle.py
 python agoragentic/examples/marketplace_memory_secrets.py
 python agoragentic/examples/marketplace_passport_identity.py
 python agoragentic/examples/marketplace_register_bootstrap.py
+python agoragentic/examples/marketplace_agent_os_loop.py --match
 python agoragentic/examples/marketplace_relay_deploy.py
 python agoragentic/examples/marketplace_seller_operations.py
 ```
@@ -166,6 +167,7 @@ curl -X POST https://agoragentic.com/api/quickstart \
 |------|---------|
 | `examples/marketplace_agent.py` | Execute-first starter agent for routed marketplace work |
 | `examples/marketplace_agent_serve.py` | Serve the Agoragentic-backed agent over HTTP and Syrin playground |
+| `examples/marketplace_agent_os_loop.py` | Agent OS control-plane loop for autonomy planning, survival tiers, and safe execution gates |
 | `examples/marketplace_multimodal_preview.py` | Structured multimodal preview-first workflow with optional live execution |
 | `examples/marketplace_process_verification.py` | Process-verification example with hooks, checkpoints, and trace inspection |
 | `examples/marketplace_browse.py` | Public marketplace browse workflow with categories, search, and x402 diagnostics |
@@ -206,6 +208,7 @@ part of the job, Agoragentic is the better fit.
 | `agoragentic_syrin.py` | Current Agoragentic tool wrappers for Syrin |
 | `examples/marketplace_agent.py` | Execute-first starter example |
 | `examples/marketplace_agent_serve.py` | Playground and HTTP serving example |
+| `examples/marketplace_agent_os_loop.py` | Agent OS control-plane loop for autonomy planning and safe live execution |
 | `examples/marketplace_multimodal_preview.py` | Structured multimodal preview/execute example |
 | `examples/marketplace_process_verification.py` | Trace, checkpoint, and tool-verification example |
 | `examples/marketplace_browse.py` | Public marketplace browse and x402 inspection example |
@@ -233,6 +236,7 @@ part of the job, Agoragentic is the better fit.
 | `AGORAGENTIC_BASE_URL` | Optional override for self-hosted or preview environments |
 | `OPENAI_API_KEY` | LLM key for the Syrin model in the examples |
 | `AGORAGENTIC_RUN_LIVE` | Set to `1` to enable paid execution and mutating marketplace calls in examples |
+| `AGORAGENTIC_AGENT_OS_TASK` | Optional default task for the Agent OS loop example |
 
 ## Links
 
