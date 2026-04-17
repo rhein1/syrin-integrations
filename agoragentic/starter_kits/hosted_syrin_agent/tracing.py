@@ -142,18 +142,31 @@ def build_default_spans(
     approval_required: bool = False,
 ) -> tuple[LightningSpan, ...]:
     """Build a small default span tree for hosted Syrin preview and live runs."""
+    base_ms = _now_ms()
+
+    def _window(index: int) -> tuple[int, int]:
+        start_ms = base_ms + (index * 10)
+        return start_ms, start_ms + 5
+
+    root_start_ms, root_end_ms = _window(0)
     root = build_span(
         "hosted_syrin_rollout",
         "rollout",
         status="preview" if preview_only else "ready",
         attributes={"task": task, "max_cost_usd": max_cost_usd},
+        start_ms=root_start_ms,
+        end_ms=root_end_ms,
     )
+    profile_start_ms, profile_end_ms = _window(1)
     profile = build_span(
         "runtime.profile_loaded",
         "lifecycle",
         attributes={"preview_only": preview_only},
+        start_ms=profile_start_ms,
+        end_ms=profile_end_ms,
         parent_span_id=root.span_id,
     )
+    routing_start_ms, routing_end_ms = _window(2)
     routing = build_span(
         "routing.match",
         "router",
@@ -163,8 +176,11 @@ def build_default_spans(
             "preview_only": preview_only,
             "max_cost_usd": max_cost_usd,
         },
+        start_ms=routing_start_ms,
+        end_ms=routing_end_ms,
         parent_span_id=root.span_id,
     )
+    gate_start_ms, gate_end_ms = _window(3)
     gate = build_span(
         "execution.gate",
         "gate",
@@ -173,12 +189,17 @@ def build_default_spans(
             "approval_required": approval_required,
             "preview_only": preview_only,
         },
+        start_ms=gate_start_ms,
+        end_ms=gate_end_ms,
         parent_span_id=root.span_id,
     )
+    artifact_start_ms, artifact_end_ms = _window(4)
     artifact = build_span(
         "artifact.export",
         "artifact",
         attributes={"format": "json", "consumer": "agent-lightning-style"},
+        start_ms=artifact_start_ms,
+        end_ms=artifact_end_ms,
         parent_span_id=root.span_id,
     )
     return (root, profile, routing, gate, artifact)

@@ -28,12 +28,12 @@ def _env_flag(value: str | None, default: bool = False) -> bool:
 
 
 def _env_int(value: str | None, default: int) -> int:
-    """Parse an integer environment variable with a safe default."""
+    """Parse a positive integer environment variable with a safe default."""
     try:
         parsed = int(str(value).strip())
     except (TypeError, ValueError):
         return default
-    return parsed if parsed > 0 else 0
+    return parsed if parsed > 0 else default
 
 
 def _env_float(value: str | None, default: float) -> float:

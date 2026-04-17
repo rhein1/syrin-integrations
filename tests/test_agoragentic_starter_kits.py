@@ -73,7 +73,7 @@ class AgoragenticStarterKitTests(unittest.TestCase):
             }
         )
 
-        self.assertEqual(profile.port, 0)
+        self.assertEqual(profile.port, 8000)
         self.assertEqual(profile.max_budget_usd, 0.0)
 
     def test_system_prompt_keeps_preview_first_contract(self):

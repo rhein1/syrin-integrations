@@ -102,7 +102,7 @@ def main() -> None:
 
     args = _build_parser().parse_args()
     profile = build_runtime_profile()
-    preview_only = not profile.live_enabled and not args.task_completed
+    preview_only = not profile.live_enabled
 
     spans = build_default_spans(
         task=args.task,
@@ -131,7 +131,7 @@ def main() -> None:
     )
     path = write_agent_lightning_export(export, ROOT / args.output)
 
-    print(f"Wrote Agent Lightning export to {path}")
+    print(f"Wrote Agent Lightning export to {path}", file=sys.stderr)
     print(json.dumps(export.as_dict(), indent=2))
 
     if args.print_agent_os_prompt:

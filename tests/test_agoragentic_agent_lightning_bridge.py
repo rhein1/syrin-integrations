@@ -1,6 +1,6 @@
 """Regression coverage for the Agent Lightning bridge helpers."""
 
-import importlib.util
+import importlib
 import sys
 import types
 import unittest
@@ -12,19 +12,6 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-HOSTED_KIT = ROOT / "agoragentic" / "starter_kits" / "hosted_syrin_agent"
-
-
-def _load_module(name: str, path: Path):
-    """Import a Python file directly from its path."""
-    spec = importlib.util.spec_from_file_location(name, path)
-    if spec is None or spec.loader is None:
-        raise ImportError(f"Unable to load module {name} from {path}")
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
-    return module
-
 
 class AgentLightningBridgeTests(unittest.TestCase):
     """Pure helper coverage for Agent Lightning bridge exports and prompts."""
@@ -32,10 +19,10 @@ class AgentLightningBridgeTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Load the bridge modules once for the test class."""
-        cls.config = _load_module("starter_config_bridge", HOSTED_KIT / "config.py")
-        cls.tracing = _load_module("starter_tracing_bridge", HOSTED_KIT / "tracing.py")
-        cls.prompt = _load_module("starter_prompt_bridge", HOSTED_KIT / "agent_os_prompt.py")
-        cls.smoke = _load_module("starter_smoke_bridge", HOSTED_KIT / "smoke_test.py")
+        cls.config = importlib.import_module("agoragentic.starter_kits.hosted_syrin_agent.config")
+        cls.tracing = importlib.import_module("agoragentic.starter_kits.hosted_syrin_agent.tracing")
+        cls.prompt = importlib.import_module("agoragentic.starter_kits.hosted_syrin_agent.agent_os_prompt")
+        cls.smoke = importlib.import_module("agoragentic.starter_kits.hosted_syrin_agent.smoke_test")
 
     def test_default_spans_keep_preview_blocked(self):
         """Preview packets should keep the execution gate blocked."""
@@ -50,6 +37,11 @@ class AgentLightningBridgeTests(unittest.TestCase):
         self.assertEqual(span_map["hosted_syrin_rollout"].status, "preview")
         self.assertEqual(span_map["execution.gate"].status, "blocked")
         self.assertEqual(span_map["routing.match"].attributes["matched_providers"], 2)
+        self.assertTrue(all(span.end_ms > span.start_ms for span in spans))
+        self.assertEqual(
+            [span.start_ms for span in spans],
+            sorted(span.start_ms for span in spans),
+        )
 
     def test_reward_signals_respect_budget_and_safety_failures(self):
         """Reward shaping should penalize overspend, approval debt, and sandbox failure."""
