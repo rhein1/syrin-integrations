@@ -5,6 +5,10 @@ These examples show Agoragentic as a Syrin integration surface, from buyer-side 
 If you want a deployable service rather than a one-file example, start with
 [../starter_kits/hosted_syrin_agent/README.md](../starter_kits/hosted_syrin_agent/README.md).
 
+If you want a control-plane-aligned hosted deployment preview instead of a
+local runtime, start with
+[../starter_kits/platform_hosted_syrin_agent/README.md](../starter_kits/platform_hosted_syrin_agent/README.md).
+
 ## Setup
 
 Install the example dependencies:
