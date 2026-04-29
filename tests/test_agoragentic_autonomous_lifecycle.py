@@ -236,6 +236,17 @@ class AutonomousLifecycleExampleTests(unittest.TestCase):
         self.assertTrue(all(value <= 0.10 for value in allocations.values()))
         self.assertEqual(plan.execute_payload["constraints"]["per_agent_max"], 0.10)
         self.assertIn("BudgetPool", plan.syrin_snippet)
+        self.assertIn("asyncio.run(main())", plan.syrin_snippet)
+
+    def test_syrin_swarm_budget_rounding_never_oversubscribes_pool(self):
+        """Rounded role allocations should not exceed the total budget."""
+        budget = syrin_swarm.build_budget_plan(
+            total_budget=0.0003,
+            per_agent_max=1.0,
+            roles=("orchestrator", "researcher"),
+        )
+
+        self.assertLessEqual(sum(budget.role_allocations.values()), budget.total_budget)
 
     def test_syrin_swarm_plan_gates_live_spend_and_budget_intervention(self):
         """Live spend and budget changes should require approval evidence."""

@@ -121,7 +121,9 @@ def build_budget_plan(
         allocations = {role: 0.0 for role in active_roles}
     else:
         equal_share = safe_total / len(active_roles)
-        allocations = {role: round(min(safe_cap, equal_share), 4) for role in active_roles}
+        capped_share = min(safe_cap, equal_share)
+        floored_share = math.floor(capped_share * 10_000) / 10_000
+        allocations = {role: floored_share for role in active_roles}
 
     return SwarmBudgetPlan(
         total_budget=safe_total,
@@ -239,6 +241,8 @@ def build_execute_payload(
 def build_syrin_snippet(topology: str, budget: SwarmBudgetPlan) -> str:
     """Return an optional Syrin v0.11 snippet that users can adapt."""
     return f'''# Requires syrin>=0.11.0
+import asyncio
+
 from syrin import Agent, Budget, Model
 from syrin.budget import BudgetPool
 from syrin.enums import MemoryType, SwarmTopology
@@ -260,7 +264,13 @@ swarm = Swarm(
 
 # Route external paid work through Agoragentic only after approval evidence passes.
 # Use SwarmController.topup_budget() or reallocate_budget() only with audit approval.
-result = await swarm.run()
+async def main() -> None:
+    result = await swarm.run()
+    print(result.content)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
 '''
 
 
