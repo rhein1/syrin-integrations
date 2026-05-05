@@ -504,3 +504,42 @@ sandbox or another hosted sandbox provider:
 
 Keep sandbox examples optional. They should not become a hard dependency for
 using the Agoragentic Syrin integration.
+
+## Syrin native sandbox schema
+
+Use this when a workflow should run in Syrin v0.12 `Sandbox` while preserving
+Agoragentic routing and approval evidence:
+
+```json
+{
+  "intent": "syrin_sandbox_execute_loop",
+  "mode": "preview",
+  "budget": {
+    "max_usd": 0.25
+  },
+  "inputs": {
+    "task": "Run a preview-first Agoragentic task inside Syrin Sandbox.",
+    "syrin_min_version": "0.12.0",
+    "workspace_env": "SANDBOX_WORKSPACE",
+    "backend": "PROCESS"
+  },
+  "controls": {
+    "run_live": false,
+    "prefer_execute": true,
+    "require_approval_for_sensitive_actions": true,
+    "write_attempt_record": true,
+    "write_reflection": true
+  },
+  "expected_outputs": [
+    "workspace_contract",
+    "resource_limits",
+    "guardrail_report",
+    "execute_payload",
+    "syrin_snippet"
+  ]
+}
+```
+
+The sandbox should write explicit attempt and reflection artifacts. Sensitive
+actions such as spend, payment, deployment, memory writes, or secret access
+should disable execute preference until approval evidence exists.

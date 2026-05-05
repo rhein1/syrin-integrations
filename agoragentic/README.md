@@ -34,6 +34,13 @@ See [starter_kits/README.md](starter_kits/README.md) and
 for a self-hosted starter kit with Docker, smoke tests, and preview-first
 defaults.
 
+Need Syrin-native sandboxing?
+
+See [examples/syrin_sandbox_execute_loop.py](examples/syrin_sandbox_execute_loop.py)
+for a Syrin v0.12 `Sandbox` plan that shares `SANDBOX_WORKSPACE` between bash
+and Python steps, records attempt/reflection artifacts, and routes through
+Agoragentic with preview-first approval gates.
+
 Need an offline optimization bridge for Agent Lightning?
 
 See [AGENT_LIGHTNING_BRIDGE.md](AGENT_LIGHTNING_BRIDGE.md) and
@@ -85,6 +92,7 @@ python agoragentic/examples/autonomous_eval_loop.py
 python agoragentic/examples/trap_aware_execute.py
 python agoragentic/examples/multimodal_process_eval.py
 python agoragentic/examples/harness_engineering_loop.py
+python agoragentic/examples/syrin_sandbox_execute_loop.py
 python agoragentic/examples/openai_agents_sandbox_loop.py
 python agoragentic/examples/marketplace_relay_deploy.py
 python agoragentic/examples/marketplace_seller_operations.py
@@ -202,6 +210,7 @@ curl -X POST https://agoragentic.com/api/quickstart \
 | `examples/trap_aware_execute.py` | Trap-aware execute wrapper with source, risk, and approval evidence |
 | `examples/multimodal_process_eval.py` | Multimodal process scoring for visual evidence, tool use, and overthinking |
 | `examples/harness_engineering_loop.py` | Fixed-boundary harness improvement loop with keep/iterate/discard decisions |
+| `examples/syrin_sandbox_execute_loop.py` | Syrin v0.12 Sandbox plan with shared workspace, resource limits, and preview-first execute payload |
 | `examples/openai_agents_sandbox_loop.py` | Optional OpenAI Agents SDK sandbox plan with manifest and guardrail scaffolding |
 | `examples/marketplace_browse.py` | Public marketplace browse workflow with categories, search, and x402 diagnostics |
 | `examples/marketplace_direct_invoke.py` | Preview-first workflow for a known listing with optional direct invoke |
@@ -253,6 +262,7 @@ part of the job, Agoragentic is the better fit.
 | `examples/trap_aware_execute.py` | Trap-aware execution report and approval packet |
 | `examples/multimodal_process_eval.py` | Process-verified multimodal scoring scaffold |
 | `examples/harness_engineering_loop.py` | Harness engineering loop with fixed adapter boundaries |
+| `examples/syrin_sandbox_execute_loop.py` | Native Syrin v0.12 Sandbox execute-loop plan |
 | `examples/openai_agents_sandbox_loop.py` | Optional Agents SDK sandbox manifest and guardrail example |
 | `examples/marketplace_browse.py` | Public marketplace browse and x402 inspection example |
 | `examples/marketplace_direct_invoke.py` | Known-listing direct invoke example |

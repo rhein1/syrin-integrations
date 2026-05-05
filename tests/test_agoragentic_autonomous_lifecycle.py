@@ -27,6 +27,7 @@ trap_execute = _load_example("trap_aware_execute")
 multimodal_eval = _load_example("multimodal_process_eval")
 harness_loop = _load_example("harness_engineering_loop")
 openai_sandbox = _load_example("openai_agents_sandbox_loop")
+syrin_sandbox = _load_example("syrin_sandbox_execute_loop")
 
 
 class AutonomousLifecycleExampleTests(unittest.TestCase):
@@ -219,6 +220,65 @@ class AutonomousLifecycleExampleTests(unittest.TestCase):
     def test_openai_sandbox_preserves_zero_budget(self):
         """Sandbox payloads should not silently raise a caller-provided zero budget."""
         payload = openai_sandbox.build_execute_payload("Preview only.", max_cost=0.0)
+
+        self.assertEqual(payload["constraints"]["max_cost"], 0.0)
+
+    def test_syrin_sandbox_plan_targets_native_v012_sandbox(self):
+        """Syrin sandbox plans should reference the first native sandbox release."""
+        plan = syrin_sandbox.build_syrin_sandbox_plan(
+            "Preview a routed task.",
+            packages=("pandas",),
+        )
+        data = plan.as_dict()
+
+        self.assertEqual(data["syrin_min_version"], "0.12.0")
+        self.assertEqual(data["execute_payload"]["input"]["sandbox"]["provider"], "syrin")
+        self.assertEqual(data["packages"], ["pandas"])
+        self.assertIn("Sandbox(", data["syrin_snippet"])
+
+    def test_syrin_sandbox_shared_workspace_contract(self):
+        """Bash and Python sandbox steps should share SANDBOX_WORKSPACE artifacts."""
+        plan = syrin_sandbox.build_syrin_sandbox_plan("Prepare attempt evidence.")
+        data = plan.as_dict()
+
+        self.assertEqual(data["workspace_contract"]["env"], "SANDBOX_WORKSPACE")
+        self.assertEqual(data["steps"][0]["kind"], "bash")
+        self.assertEqual(data["steps"][1]["kind"], "python")
+        self.assertIn("outputs/attempt.json", data["steps"][1]["writes"])
+
+    def test_syrin_sandbox_sensitive_action_disables_execute_preference(self):
+        """Sensitive sandbox actions should require approval before routing intent."""
+        plan = syrin_sandbox.build_syrin_sandbox_plan(
+            "Deploy a seller function.",
+            live_enabled=True,
+            requested_action="deploy live spend",
+        )
+        data = plan.as_dict()
+
+        self.assertEqual(data["guardrail_report"]["decision"], "review")
+        self.assertTrue(data["guardrail_report"]["requires_approval"])
+        self.assertFalse(data["execute_payload"]["constraints"]["prefer_execute"])
+        self.assertTrue(data["execute_payload"]["constraints"]["preview_only"])
+
+    def test_syrin_sandbox_action_matching_uses_boundaries(self):
+        """Sandbox action matching should avoid substring false positives."""
+        report = syrin_sandbox.build_guardrail_report(
+            "display paywall routing options",
+            live_enabled=False,
+        )
+
+        self.assertEqual(report["decision"], "allow")
+        self.assertNotIn("pay", report["sensitive_terms"])
+
+    def test_syrin_sandbox_preserves_zero_budget(self):
+        """Sandbox execute payloads should preserve caller-provided zero budget."""
+        report = syrin_sandbox.build_guardrail_report("preview route", live_enabled=False)
+        payload = syrin_sandbox.build_execute_payload(
+            "Preview only.",
+            max_cost=0.0,
+            guardrail_report=report,
+            backend="PROCESS",
+        )
 
         self.assertEqual(payload["constraints"]["max_cost"], 0.0)
 
