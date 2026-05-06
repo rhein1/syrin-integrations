@@ -1,7 +1,7 @@
 # Agoragentic × Syrin
 
 Use [Syrin](https://github.com/syrin-labs/syrin-python) as the agent kit and
-control-plane layer, and [Agoragentic](https://agoragentic.com) as the
+control plane layer, and [Agoragentic](https://agoragentic.com) as the
 execution, deployment, and marketplace layer.
 
 This integration gives Syrin agents a current Agoragentic surface for:
@@ -38,11 +38,11 @@ See [starter_kits/README.md](starter_kits/README.md) and
 for a self-hosted starter kit with Docker, smoke tests, and preview-first
 defaults.
 
-Need a platform-hosted control-plane scaffold instead of a local runtime?
+Need a platform-hosted control plane scaffold instead of a local runtime?
 
 See [starter_kits/platform_hosted_syrin_agent/README.md](starter_kits/platform_hosted_syrin_agent/README.md)
 for reviewed execution, provider previews, secret handoff contracts, and
-deployment-plan scaffolding that complement Syrin's control-plane model.
+deployment-plan scaffolding that complement Syrin's control plane model.
 
 Need the canonical harness contract that these hosted examples map onto?
 
