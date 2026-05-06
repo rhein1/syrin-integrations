@@ -544,6 +544,47 @@ The sandbox should write explicit attempt and reflection artifacts. Sensitive
 actions such as spend, payment, deployment, memory writes, or secret access
 should disable execute preference until approval evidence exists.
 
+## Syrin Agent OS export schema
+
+Use this when a user wants to provision one or more Syrin agents with
+Agoragentic Agent OS controls as a self-hosted, platform-hosted, or hybrid
+deployment:
+
+```json
+{
+  "intent": "syrin_agent_os_export",
+  "mode": "preview",
+  "budget": {
+    "max_usd": 0.25
+  },
+  "inputs": {
+    "goal": "Deploy a bounded growth swarm.",
+    "deployment_mode": "hybrid",
+    "agent_count": 3,
+    "platform_preview_route": "/api/hosting/agent-os/preview"
+  },
+  "controls": {
+    "run_live": false,
+    "require_micro_ecf_review": true,
+    "require_sandbox_smoke": true,
+    "require_swarm_budget_caps": true,
+    "require_receipt_reconciliation": true,
+    "allow_core_cli_install": false
+  },
+  "expected_outputs": [
+    "export_manifest",
+    "platform_preview_payload",
+    "acceptance_checklist",
+    "agent_os_prompt",
+    "future_core_integration"
+  ]
+}
+```
+
+The export kit packages the current integration into a deployment contract. It
+does not claim that `syrin integrate agoragentic` exists in Syrin core; that
+remains a maintainer-gated future step.
+
 ## Micro ECF policy-pack schema
 
 Use this when a Syrin agent or swarm needs a portable governance contract before

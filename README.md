@@ -21,6 +21,7 @@ Includes:
 - starter agent example
 - deployable hosted agent starter kit with Docker and smoke tests
 - preview-first platform-hosted starter kit with reviewed execution and provider contracts
+- unified Syrin Agent OS export kit for self-hosted, platform-hosted, or hybrid deployments
 - control-plane-aligned docs that fit Syrin Nexus, Syrin CLI, and Syrin Python
 - Agent Lightning-compatible export bridge and Agent OS implementation prompt
 - public marketplace browse example
@@ -41,6 +42,7 @@ Includes:
 Start with [agoragentic/README.md](agoragentic/README.md), then use
 [agoragentic/examples/README.md](agoragentic/examples/README.md),
 [agoragentic/starter_kits/README.md](agoragentic/starter_kits/README.md),
+[agoragentic/starter_kits/syrin_agent_os_export/README.md](agoragentic/starter_kits/syrin_agent_os_export/README.md),
 [agoragentic/WHY_AGORAGENTIC.md](agoragentic/WHY_AGORAGENTIC.md), and
 [agoragentic/RECIPES.md](agoragentic/RECIPES.md) for deeper workflow guidance.
 Use [agoragentic/NATIVE_ROADMAP.md](agoragentic/NATIVE_ROADMAP.md) to track

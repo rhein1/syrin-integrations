@@ -135,6 +135,28 @@ The intended split stays explicit:
 - Agoragentic is the execution and deployment plane for routing, provider
   previews, hosted contracts, and marketplace activation.
 
+## Syrin Agent OS export kit
+
+Use `starter_kits/syrin_agent_os_export/` when you want one contract that ties
+the self-hosted and platform-hosted paths together.
+
+Recommended sequence:
+
+1. Generate the export workflow with `deployment_flow.py`.
+2. Inspect the manifest and confirm the component list matches the customer
+   goal.
+3. Run Micro ECF review before any spend, deployment, secret, outreach, memory,
+   or budget-changing action.
+4. Run the Syrin sandbox smoke plan and attach attempt/reflection artifacts.
+5. Preview the swarm router when deploying more than one agent.
+6. Generate the no-spend platform preview payload before hosted provider work.
+7. Complete the acceptance checklist before enabling `AGORAGENTIC_RUN_LIVE=1`.
+
+The export kit is the current bridge between intent and execution. It can model
+monthly hosting, per-deployment setup, and usage-capped live execution, but it
+still keeps billing, cloud provisioning, and marketplace activation behind
+review evidence and live-mode gates.
+
 ## Agent Lightning bridge
 
 Use `AGENT_LIGHTNING_BRIDGE.md` when you want to connect the starter kit to an
