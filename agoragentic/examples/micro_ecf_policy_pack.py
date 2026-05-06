@@ -27,7 +27,18 @@ SENSITIVE_ACTION_TERMS = (
     "execute live",
     "spend",
     "pay",
+    "payment",
+    "payments",
+    "purchase",
+    "purchases",
+    "buy",
+    "buying",
+    "charge",
+    "charges",
     "settle",
+    "transact",
+    "transaction",
+    "transactions",
     "deploy",
     "write memory",
     "store secret",
@@ -35,6 +46,24 @@ SENSITIVE_ACTION_TERMS = (
     "send email",
     "post outreach",
     "change budget",
+)
+
+LIVE_SPEND_TERMS = (
+    "execute live",
+    "spend",
+    "pay",
+    "payment",
+    "payments",
+    "purchase",
+    "purchases",
+    "buy",
+    "buying",
+    "charge",
+    "charges",
+    "settle",
+    "transact",
+    "transaction",
+    "transactions",
 )
 
 PROHIBITED_ACTION_TERMS = (
@@ -111,7 +140,7 @@ class MicroECFPolicyPack:
             "version": self.version,
             "intent": self.intent.as_dict(),
             "boundary": self.boundary.as_dict(),
-            "review_gates": self.review_gates,
+            "review_gates": {key: list(values) for key, values in self.review_gates.items()},
             "consequence_axes": list(self.consequence_axes),
             "reconciliation_required": list(self.reconciliation_required),
             "fingerprint": fingerprint_policy(self),
@@ -251,7 +280,7 @@ def classify_action(action: str, policy: MicroECFPolicyPack) -> dict[str, Any]:
         blocked_reasons.append("secret_access_not_allowed")
     if "deploy" in sensitive_terms and not policy.boundary.deployment_allowed:
         blocked_reasons.append("deployment_not_allowed")
-    if any(term in sensitive_terms for term in ("execute live", "spend", "pay", "settle")):
+    if any(term in sensitive_terms for term in LIVE_SPEND_TERMS):
         if not policy.boundary.live_spend_allowed:
             blocked_reasons.append("live_spend_not_allowed")
     if "write memory" in sensitive_terms and not policy.boundary.memory_write_allowed:
@@ -276,7 +305,7 @@ def classify_action(action: str, policy: MicroECFPolicyPack) -> dict[str, Any]:
 def required_evidence_for_terms(sensitive_terms: list[str]) -> list[str]:
     """Map sensitive action terms to Micro ECF evidence requirements."""
     evidence: list[str] = []
-    if any(term in sensitive_terms for term in ("execute live", "spend", "pay", "settle")):
+    if any(term in sensitive_terms for term in LIVE_SPEND_TERMS):
         evidence.extend(default_review_gates()["live_spend"])
     if "deploy" in sensitive_terms:
         evidence.extend(default_review_gates()["deployment"])

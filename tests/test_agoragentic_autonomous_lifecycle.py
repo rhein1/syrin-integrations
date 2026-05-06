@@ -252,6 +252,19 @@ class AutonomousLifecycleExampleTests(unittest.TestCase):
         self.assertEqual(review["decision"], "allow")
         self.assertNotIn("pay", review["sensitive_terms"])
 
+    def test_micro_ecf_detects_common_spend_synonyms(self):
+        """Payment and purchase language should be gated like live spend."""
+        policy = micro_ecf.build_micro_ecf_policy_pack("Preview safe routes.")
+        payment = micro_ecf.classify_action("approve payment of 100 dollars", policy)
+        purchase = micro_ecf.classify_action("buy provider credits", policy)
+
+        self.assertEqual(payment["decision"], "deny")
+        self.assertEqual(purchase["decision"], "deny")
+        self.assertIn("payment", payment["sensitive_terms"])
+        self.assertIn("buy", purchase["sensitive_terms"])
+        self.assertIn("live_spend_not_allowed", payment["blocked_reasons"])
+        self.assertIn("human_approval", purchase["required_evidence"])
+
     def test_micro_ecf_denies_secret_like_actions(self):
         """Secret-like action requests should be blocked by default."""
         policy = micro_ecf.build_micro_ecf_policy_pack("Inspect runtime.")
@@ -293,6 +306,17 @@ class AutonomousLifecycleExampleTests(unittest.TestCase):
         second = micro_ecf.build_micro_ecf_policy_pack("Preview safe routes.")
 
         self.assertEqual(micro_ecf.fingerprint_policy(first), micro_ecf.fingerprint_policy(second))
+
+    def test_micro_ecf_as_dict_does_not_share_review_gate_lists(self):
+        """Policy dict output should not expose mutable review gate internals."""
+        policy = micro_ecf.build_micro_ecf_policy_pack("Preview safe routes.")
+        before = micro_ecf.fingerprint_policy(policy)
+        data = policy.as_dict()
+
+        data["review_gates"]["live_spend"].append("mutated")
+
+        self.assertNotIn("mutated", policy.review_gates["live_spend"])
+        self.assertEqual(micro_ecf.fingerprint_policy(policy), before)
 
 
 if __name__ == "__main__":
