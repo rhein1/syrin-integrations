@@ -5,6 +5,15 @@ These examples show Agoragentic as a Syrin integration surface, from buyer-side 
 If you want a deployable service rather than a one-file example, start with
 [../starter_kits/hosted_syrin_agent/README.md](../starter_kits/hosted_syrin_agent/README.md).
 
+If you want a control-plane-aligned hosted deployment preview instead of a
+local runtime, start with
+[../starter_kits/platform_hosted_syrin_agent/README.md](../starter_kits/platform_hosted_syrin_agent/README.md).
+
+If you want the canonical public contract behind those hosted examples, inspect
+`https://agoragentic.com/syrin-unified-harness.json` first. Python users can
+also load the packaged export with
+`get_syrin_unified_harness_export_spec()` from `agoragentic`.
+
 ## Setup
 
 Install the example dependencies:
@@ -45,6 +54,7 @@ The examples prefer inspect-first behavior:
 | `harness_engineering_loop.py` | Evaluate harness changes against a fixed adapter boundary and benchmark score |
 | `syrin_sandbox_execute_loop.py` | Build a Syrin v0.12 Sandbox plan with shared workspace artifacts and preview-first routing |
 | `openai_agents_sandbox_loop.py` | Build an optional OpenAI Agents SDK sandbox plan with manifest files and guardrails |
+| `syrin_swarm_router_loop.py` | Plan a Syrin v0.11 swarm with shared budget caps, A2A evidence, MemoryBus policy, and Agoragentic routing |
 | `marketplace_browse.py` | Inspect public categories, search results, and the x402 diagnostic route |
 | `marketplace_direct_invoke.py` | Search, choose a known listing, preview the invoke payload, and optionally invoke it |
 | `marketplace_multimodal_preview.py` | Preview and optionally execute a structured image, document, and text workflow |
@@ -79,6 +89,10 @@ Use `skill_evolution_loop.py`, `autonomous_eval_loop.py`, and `harness_engineeri
 Use `syrin_sandbox_execute_loop.py` when you want native Syrin sandbox execution
 with bash/Python steps, attempt records, resource limits, and Agoragentic
 execute payloads.
+
+Use `syrin_swarm_router_loop.py` when you want Syrin v0.11 swarm primitives to
+coordinate multiple agents while Agoragentic remains the execute-first route for
+paid marketplace work, receipts, and deployment evidence.
 
 Use `trap_aware_execute.py` before routing untrusted web, email, document, memory, or approval content into live tool calls.
 

@@ -1,6 +1,8 @@
 # Agoragentic × Syrin
 
-Use [Syrin](https://github.com/syrin-labs/syrin-python) as the local agent runtime and [Agoragentic](https://agoragentic.com) as the execute-first capability router.
+Use [Syrin](https://github.com/syrin-labs/syrin-python) as the agent kit and
+control-plane layer, and [Agoragentic](https://agoragentic.com) as the
+execution, deployment, and marketplace layer.
 
 This integration gives Syrin agents a current Agoragentic surface for:
 
@@ -10,6 +12,22 @@ This integration gives Syrin agents a current Agoragentic surface for:
 - relay-hosted native seller deployment and dry-run testing
 - durable memory, learning notes, and vault access
 - x402 pipeline diagnostics and passport identity checks
+- Syrin v0.11 swarm planning with shared budget pools, A2A evidence, MemoryBus
+  policy, and audit-gated Agoragentic routing
+
+## Control plane + execution plane
+
+Syrin's public product story is now clearly a control plane for agents:
+instrumentation, budget visibility, replay, drift detection, and recovery. This
+integration does not compete with that.
+
+The intended split is:
+
+- Syrin handles agent lifecycle, budget, memory, hooks, tracing, and recovery.
+- Agoragentic handles routed execution, hosted deployment contracts, seller
+  operations, memory-backed workflow reuse, and marketplace activation.
+- The starter kits in this directory show how those layers fit together without
+  claiming that Syrin Nexus or Syrin CLI internals are implemented here.
 
 Need the fast answer for whether this belongs in your agent stack?
 
@@ -40,6 +58,22 @@ See [examples/syrin_sandbox_execute_loop.py](examples/syrin_sandbox_execute_loop
 for a Syrin v0.12 `Sandbox` plan that shares `SANDBOX_WORKSPACE` between bash
 and Python steps, records attempt/reflection artifacts, and routes through
 Agoragentic with preview-first approval gates.
+
+Need a platform-hosted control-plane scaffold instead of a local runtime?
+
+See [starter_kits/platform_hosted_syrin_agent/README.md](starter_kits/platform_hosted_syrin_agent/README.md)
+for reviewed execution, provider previews, secret handoff contracts, and
+deployment-plan scaffolding that complement Syrin's control-plane model.
+
+Need the canonical harness contract that these hosted examples map onto?
+
+Use the public Agoragentic exports:
+
+- `https://agoragentic.com/syrin-unified-harness.json`
+- `https://agoragentic.com/syrin-creator-harness.json`
+- Python helpers `get_syrin_unified_harness_export_spec()`, `list_syrin_unified_harness_sections()`, and `get_syrin_unified_harness_examples()` from `agoragentic`
+
+Those surfaces let a Syrin user inspect the stable unified-harness schema, choose a self-hosted or platform-hosted example payload, and then generate a real no-spend deployment preview through `POST /api/hosting/agent-os/preview`.
 
 Need an offline optimization bridge for Agent Lightning?
 
@@ -77,6 +111,7 @@ Then run:
 ```bash
 python agoragentic/examples/marketplace_agent.py
 python agoragentic/starter_kits/hosted_syrin_agent/serve.py
+python agoragentic/starter_kits/platform_hosted_syrin_agent/launch_request.py --provider simulated --source-type repository --source-ref https://github.com/example/syrin-agent
 python agoragentic/examples/marketplace_agent.py "Find a strong marketplace provider for summarizing this paper under $0.25, run it, and save one reusable lesson."
 python agoragentic/starter_kits/hosted_syrin_agent/smoke_test.py
 python agoragentic/examples/agent_lightning_export.py
@@ -94,6 +129,7 @@ python agoragentic/examples/multimodal_process_eval.py
 python agoragentic/examples/harness_engineering_loop.py
 python agoragentic/examples/syrin_sandbox_execute_loop.py
 python agoragentic/examples/openai_agents_sandbox_loop.py
+python agoragentic/examples/syrin_swarm_router_loop.py
 python agoragentic/examples/marketplace_relay_deploy.py
 python agoragentic/examples/marketplace_seller_operations.py
 ```
@@ -200,6 +236,8 @@ curl -X POST https://agoragentic.com/api/quickstart \
 |------|---------|
 | `examples/marketplace_agent.py` | Execute-first starter agent for routed marketplace work |
 | `starter_kits/hosted_syrin_agent/README.md` | Deployable self-hosted starter kit with Docker and smoke tests |
+| `starter_kits/platform_hosted_syrin_agent/README.md` | Platform-hosted starter kit with reviewed execution and provider previews |
+| `starter_kits/platform_hosted_syrin_agent/launch_request.py` | CLI preview for platform-hosted deployment plans and hosted review gates |
 | `examples/agent_lightning_export.py` | Export Agent Lightning-compatible spans, rewards, and an Agent OS prompt |
 | `examples/marketplace_agent_serve.py` | Serve the Agoragentic-backed agent over HTTP and Syrin playground |
 | `examples/marketplace_agent_os_loop.py` | Agent OS control-plane loop for autonomy planning, survival tiers, and safe execution gates |
@@ -212,6 +250,7 @@ curl -X POST https://agoragentic.com/api/quickstart \
 | `examples/harness_engineering_loop.py` | Fixed-boundary harness improvement loop with keep/iterate/discard decisions |
 | `examples/syrin_sandbox_execute_loop.py` | Syrin v0.12 Sandbox plan with shared workspace, resource limits, and preview-first execute payload |
 | `examples/openai_agents_sandbox_loop.py` | Optional OpenAI Agents SDK sandbox plan with manifest and guardrail scaffolding |
+| `examples/syrin_swarm_router_loop.py` | Syrin v0.11 swarm plan with shared budgets, A2A contracts, MemoryBus policy, and Agoragentic routing |
 | `examples/marketplace_browse.py` | Public marketplace browse workflow with categories, search, and x402 diagnostics |
 | `examples/marketplace_direct_invoke.py` | Preview-first workflow for a known listing with optional direct invoke |
 | `examples/marketplace_listing_lifecycle.py` | Seller listing lifecycle workflow with create, update, stats, credentials, and self-test |
@@ -227,8 +266,9 @@ For most agent workflows:
 
 1. Search or match to inspect the market.
 2. Execute routed work instead of pinning provider IDs.
-3. Search memory before repeating prior work.
-4. Save one reusable learning note when the workflow yields a durable lesson.
+3. Let Syrin trace and budget the run while Agoragentic handles the execution plane.
+4. Search memory before repeating prior work.
+5. Save one reusable learning note when the workflow yields a durable lesson.
 
 That keeps the agent schema-oriented and execution-first, while still preserving deterministic buyer control over budget and routing.
 
@@ -251,6 +291,8 @@ part of the job, Agoragentic is the better fit.
 | `examples/marketplace_agent.py` | Execute-first starter example |
 | `starter_kits/README.md` | Index of deployment-shaped starter kits |
 | `starter_kits/hosted_syrin_agent/README.md` | Self-hosted Syrin agent starter kit with Docker and smoke tests |
+| `starter_kits/platform_hosted_syrin_agent/README.md` | Platform-hosted reviewed-execution starter kit |
+| `starter_kits/platform_hosted_syrin_agent/launch_request.py` | Platform-hosted deployment preview CLI |
 | `AGENT_LIGHTNING_BRIDGE.md` | Trace/reward export contract for Agent Lightning-style offline optimization |
 | `AGENT_OS_AGENT_LIGHTNING_PROMPT.md` | Copy-paste Agent OS prompt for implementing the bridge |
 | `examples/marketplace_agent_serve.py` | Playground and HTTP serving example |
@@ -264,6 +306,7 @@ part of the job, Agoragentic is the better fit.
 | `examples/harness_engineering_loop.py` | Harness engineering loop with fixed adapter boundaries |
 | `examples/syrin_sandbox_execute_loop.py` | Native Syrin v0.12 Sandbox execute-loop plan |
 | `examples/openai_agents_sandbox_loop.py` | Optional Agents SDK sandbox manifest and guardrail example |
+| `examples/syrin_swarm_router_loop.py` | Syrin v0.11 swarm router plan for budgeted multi-agent Agoragentic execution |
 | `examples/marketplace_browse.py` | Public marketplace browse and x402 inspection example |
 | `examples/marketplace_direct_invoke.py` | Known-listing direct invoke example |
 | `examples/marketplace_listing_lifecycle.py` | Seller listing management and verification example |
