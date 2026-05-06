@@ -60,7 +60,7 @@ class SyrinAgentOSExportKitTests(unittest.TestCase):
             mode="platform_hosted",
             include_platform_hosting=True,
         )
-        payload = build_platform_preview_payload(export)
+        payload = build_platform_preview_payload(export, provider=" ")
 
         self.assertEqual(payload["method"], "POST")
         self.assertEqual(payload["route"], PLATFORM_PREVIEW_ROUTE)
@@ -94,6 +94,14 @@ class SyrinAgentOSExportKitTests(unittest.TestCase):
         self.assertTrue(all(not phase["live_effects_allowed"] for phase in phases[:-1]))
         self.assertEqual(workflow["platform_preview_payload"]["route"], PLATFORM_PREVIEW_ROUTE)
         self.assertIn("Micro ECF", workflow["agent_os_prompt"])
+
+    def test_export_builders_reject_invalid_budget_and_agent_count(self):
+        """Invalid deployment parameters should fail before manifest construction."""
+        with self.assertRaisesRegex(ValueError, "agent_count"):
+            build_export_manifest("Bad count.", agent_count=0)
+
+        with self.assertRaisesRegex(ValueError, "max_budget_usd"):
+            build_deployment_workflow("Bad budget.", max_budget_usd=-0.01)
 
     def test_agent_os_prompt_keeps_core_cli_maintainer_gated(self):
         """The export prompt should not tell users core CLI integration exists."""

@@ -16,22 +16,28 @@ def _plain_object(value: Any) -> dict[str, Any]:
     return dict(value) if isinstance(value, Mapping) else {}
 
 
-def _non_negative_finite_float(value: Any, default: float = 0.0) -> float:
-    """Parse a non-negative finite float without widening invalid budgets."""
+def _require_non_negative_finite_float(value: Any, field_name: str) -> float:
+    """Parse a non-negative finite float or fail closed."""
     try:
         parsed = float(str(value).strip())
     except (AttributeError, TypeError, ValueError):
-        return default
-    return parsed if math.isfinite(parsed) and parsed >= 0 else 0.0
+        raise ValueError(f"{field_name} must be a non-negative finite number.") from None
+    if not math.isfinite(parsed) or parsed < 0:
+        raise ValueError(f"{field_name} must be a non-negative finite number.")
+    return parsed
 
 
-def _positive_int(value: Any, default: int = 1) -> int:
-    """Parse a positive integer for agent-count planning."""
+def _require_positive_int(value: Any, field_name: str) -> int:
+    """Parse a positive integer or fail closed."""
+    if isinstance(value, bool):
+        raise ValueError(f"{field_name} must be an integer greater than zero.")
     try:
         parsed = int(str(value).strip())
     except (AttributeError, TypeError, ValueError):
-        return default
-    return parsed if parsed >= 1 else default
+        raise ValueError(f"{field_name} must be an integer greater than zero.") from None
+    if parsed < 1:
+        raise ValueError(f"{field_name} must be an integer greater than zero.")
+    return parsed
 
 
 def _normalize_mode(mode: str | None) -> str:
@@ -124,8 +130,8 @@ def build_export_manifest(
 ) -> SyrinAgentOSExport:
     """Build the export manifest used by self-hosted or platform-hosted launches."""
     normalized_mode = _normalize_mode(mode)
-    normalized_agents = _positive_int(agent_count, 1)
-    budget = _non_negative_finite_float(max_budget_usd, 0.25)
+    normalized_agents = _require_positive_int(agent_count, "agent_count")
+    budget = _require_non_negative_finite_float(max_budget_usd, "max_budget_usd")
     platform_requested = include_platform_hosting or normalized_mode in {"platform_hosted", "hybrid"}
     self_hosted_requested = include_self_hosting and normalized_mode in {"self_hosted", "hybrid"}
     components = [
@@ -262,6 +268,7 @@ def build_platform_preview_payload(
 ) -> dict[str, Any]:
     """Build a no-spend payload for Agoragentic platform-hosting previews."""
     manifest = _export_dict(export)
+    normalized_provider = str(provider or "").strip() or "simulated_runtime"
     return {
         "method": "POST",
         "route": PLATFORM_PREVIEW_ROUTE,
@@ -273,7 +280,7 @@ def build_platform_preview_payload(
             "max_budget_usd": manifest.get("max_budget_usd"),
             "source_type": "runtime_bundle",
             "source_ref": "syrin_agent_os_export",
-            "provider": provider,
+            "provider": normalized_provider,
             "components": manifest.get("components") or [],
             "controls": manifest.get("controls") or {},
             "constraints": {

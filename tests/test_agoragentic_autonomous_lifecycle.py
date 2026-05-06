@@ -246,6 +246,8 @@ class AutonomousLifecycleExampleTests(unittest.TestCase):
         self.assertEqual(data["workspace_contract"]["env"], "SANDBOX_WORKSPACE")
         self.assertEqual(data["steps"][0]["kind"], "bash")
         self.assertEqual(data["steps"][1]["kind"], "python")
+        self.assertIn("outputs/attempt.json", data["workspace_contract"]["outputs"])
+        self.assertIn("outputs/reflection.json", data["workspace_contract"]["outputs"])
         self.assertIn("outputs/attempt.json", data["steps"][1]["writes"])
 
     def test_syrin_sandbox_sensitive_action_disables_execute_preference(self):
@@ -404,6 +406,7 @@ class AutonomousLifecycleExampleTests(unittest.TestCase):
 
         self.assertEqual(review["decision"], "deny")
         self.assertIn("secret_access_not_allowed", review["blocked_reasons"])
+        self.assertIn("human_approval", review["required_evidence"])
 
     def test_micro_ecf_execute_payload_carries_policy_fingerprint(self):
         """Execute payloads should carry policy and review evidence."""

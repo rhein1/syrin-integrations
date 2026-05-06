@@ -135,8 +135,8 @@ def build_workspace_contract(task: str) -> dict[str, Any]:
             }
         },
         "outputs": {
-            "attempt.json": "sandbox attempt record",
-            "reflection.json": "post-run reflection and next action",
+            "outputs/attempt.json": "sandbox attempt record",
+            "outputs/reflection.json": "post-run reflection and next action",
         },
         "cleanup": "async with Sandbox(...) guarantees workspace teardown",
     }

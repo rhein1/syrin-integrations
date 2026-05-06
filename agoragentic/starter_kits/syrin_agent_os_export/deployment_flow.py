@@ -21,6 +21,8 @@ build_agent_os_export_prompt = _prompt.build_agent_os_export_prompt
 build_export_manifest = _manifest.build_export_manifest
 build_platform_preview_payload = _manifest.build_platform_preview_payload
 SyrinAgentOSExport = _manifest.SyrinAgentOSExport
+_require_non_negative_finite_float = _manifest._require_non_negative_finite_float
+_require_positive_int = _manifest._require_positive_int
 
 
 def _plain_object(value: Any) -> dict[str, Any]:
@@ -70,11 +72,13 @@ def build_deployment_workflow(
 ) -> dict[str, Any]:
     """Build the canonical deployment workflow for exported agents."""
     normalized_mode = str(mode or "hybrid").strip().lower().replace("-", "_")
+    validated_agent_count = _require_positive_int(agent_count, "agent_count")
+    validated_max_budget = _require_non_negative_finite_float(max_budget_usd, "max_budget_usd")
     export = build_export_manifest(
         goal,
         mode=normalized_mode,
-        agent_count=agent_count,
-        max_budget_usd=max_budget_usd,
+        agent_count=validated_agent_count,
+        max_budget_usd=validated_max_budget,
         include_platform_hosting=normalized_mode in {"platform_hosted", "hybrid"},
     )
     manifest = export.as_dict()

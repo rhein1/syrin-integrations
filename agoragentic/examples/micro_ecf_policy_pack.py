@@ -271,6 +271,7 @@ def classify_action(action: str, policy: MicroECFPolicyPack) -> dict[str, Any]:
     sensitive_terms = _contains_any(action, SENSITIVE_ACTION_TERMS)
     prohibited_terms = _contains_any(action, PROHIBITED_ACTION_TERMS)
     secret_terms = _contains_any(action, SECRET_LIKE_TERMS)
+    combined_terms = sensitive_terms + secret_terms
 
     requires_review = bool(sensitive_terms or secret_terms)
     blocked_reasons: list[str] = []
@@ -297,7 +298,7 @@ def classify_action(action: str, policy: MicroECFPolicyPack) -> dict[str, Any]:
         "sensitive_terms": sensitive_terms,
         "prohibited_terms": prohibited_terms,
         "blocked_reasons": blocked_reasons,
-        "required_evidence": required_evidence_for_terms(sensitive_terms),
+        "required_evidence": required_evidence_for_terms(combined_terms),
         "policy_fingerprint": fingerprint_policy(policy),
     }
 
@@ -311,7 +312,7 @@ def required_evidence_for_terms(sensitive_terms: list[str]) -> list[str]:
         evidence.extend(default_review_gates()["deployment"])
     if "write memory" in sensitive_terms:
         evidence.extend(default_review_gates()["memory_write"])
-    if any(term in sensitive_terms for term in ("store secret", "retrieve secret")):
+    if any(term in sensitive_terms for term in ("store secret", "retrieve secret", *SECRET_LIKE_TERMS)):
         evidence.extend(default_review_gates()["secret_access"])
     if any(term in sensitive_terms for term in ("send email", "post outreach")):
         evidence.extend(default_review_gates()["external_message"])
