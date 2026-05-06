@@ -29,6 +29,7 @@ harness_loop = _load_example("harness_engineering_loop")
 openai_sandbox = _load_example("openai_agents_sandbox_loop")
 syrin_sandbox = _load_example("syrin_sandbox_execute_loop")
 syrin_swarm = _load_example("syrin_swarm_router_loop")
+micro_ecf = _load_example("micro_ecf_policy_pack")
 
 
 class AutonomousLifecycleExampleTests(unittest.TestCase):
@@ -353,6 +354,101 @@ class AutonomousLifecycleExampleTests(unittest.TestCase):
 
         self.assertEqual(plan.budget.total_budget, 0.0)
         self.assertEqual(plan.execute_payload["constraints"]["max_cost"], 0.0)
+
+    def test_micro_ecf_allows_preview_actions(self):
+        """Preview route actions should be allowed inside the policy boundary."""
+        policy = micro_ecf.build_micro_ecf_policy_pack("Preview safe routes.")
+        review = micro_ecf.classify_action("preview route", policy)
+
+        self.assertEqual(review["decision"], "allow")
+        self.assertFalse(review["requires_review"])
+        self.assertEqual(review["blocked_reasons"], [])
+
+    def test_micro_ecf_denies_unapproved_live_spend(self):
+        """Live spend should fail closed unless the boundary allows it."""
+        policy = micro_ecf.build_micro_ecf_policy_pack(
+            "Route paid work.",
+            live_enabled=False,
+        )
+        review = micro_ecf.classify_action("execute live spend", policy)
+
+        self.assertEqual(review["decision"], "deny")
+        self.assertIn("live_spend_not_allowed", review["blocked_reasons"])
+        self.assertIn("human_approval", review["required_evidence"])
+
+    def test_micro_ecf_word_boundaries_avoid_false_payment_hits(self):
+        """Boundary matching should not treat paywall as pay."""
+        policy = micro_ecf.build_micro_ecf_policy_pack("Preview safe routes.")
+        review = micro_ecf.classify_action("display paywall route options", policy)
+
+        self.assertEqual(review["decision"], "allow")
+        self.assertNotIn("pay", review["sensitive_terms"])
+
+    def test_micro_ecf_detects_common_spend_synonyms(self):
+        """Payment and purchase language should be gated like live spend."""
+        policy = micro_ecf.build_micro_ecf_policy_pack("Preview safe routes.")
+        payment = micro_ecf.classify_action("approve payment of 100 dollars", policy)
+        purchase = micro_ecf.classify_action("buy provider credits", policy)
+
+        self.assertEqual(payment["decision"], "deny")
+        self.assertEqual(purchase["decision"], "deny")
+        self.assertIn("payment", payment["sensitive_terms"])
+        self.assertIn("buy", purchase["sensitive_terms"])
+        self.assertIn("live_spend_not_allowed", payment["blocked_reasons"])
+        self.assertIn("human_approval", purchase["required_evidence"])
+
+    def test_micro_ecf_denies_secret_like_actions(self):
+        """Secret-like action requests should be blocked by default."""
+        policy = micro_ecf.build_micro_ecf_policy_pack("Inspect runtime.")
+        review = micro_ecf.classify_action("retrieve secret api_key", policy)
+
+        self.assertEqual(review["decision"], "deny")
+        self.assertIn("secret_access_not_allowed", review["blocked_reasons"])
+
+    def test_micro_ecf_execute_payload_carries_policy_fingerprint(self):
+        """Execute payloads should carry policy and review evidence."""
+        policy = micro_ecf.build_micro_ecf_policy_pack(
+            "Preview safe routes.",
+            max_cost_usd=0.0,
+        )
+        payload = micro_ecf.build_execute_payload("Preview one route.", policy)
+
+        self.assertEqual(payload["constraints"]["max_cost"], 0.0)
+        self.assertTrue(payload["constraints"]["preview_only"])
+        self.assertEqual(
+            payload["input"]["micro_ecf"]["fingerprint"],
+            micro_ecf.fingerprint_policy(policy),
+        )
+
+    def test_micro_ecf_denied_payload_disables_execute_preference(self):
+        """Denied actions should not keep executable routing intent enabled."""
+        policy = micro_ecf.build_micro_ecf_policy_pack("Inspect runtime.")
+        payload = micro_ecf.build_execute_payload(
+            "Inspect one secret label.",
+            policy,
+            action="retrieve secret api_key",
+        )
+
+        self.assertFalse(payload["constraints"]["prefer_execute"])
+        self.assertTrue(payload["constraints"]["preview_only"])
+
+    def test_micro_ecf_policy_fingerprint_is_deterministic(self):
+        """Equivalent policies should produce stable fingerprints."""
+        first = micro_ecf.build_micro_ecf_policy_pack("Preview safe routes.")
+        second = micro_ecf.build_micro_ecf_policy_pack("Preview safe routes.")
+
+        self.assertEqual(micro_ecf.fingerprint_policy(first), micro_ecf.fingerprint_policy(second))
+
+    def test_micro_ecf_as_dict_does_not_share_review_gate_lists(self):
+        """Policy dict output should not expose mutable review gate internals."""
+        policy = micro_ecf.build_micro_ecf_policy_pack("Preview safe routes.")
+        before = micro_ecf.fingerprint_policy(policy)
+        data = policy.as_dict()
+
+        data["review_gates"]["live_spend"].append("mutated")
+
+        self.assertNotIn("mutated", policy.review_gates["live_spend"])
+        self.assertEqual(micro_ecf.fingerprint_policy(policy), before)
 
 
 if __name__ == "__main__":

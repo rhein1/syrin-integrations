@@ -543,3 +543,38 @@ Agoragentic routing and approval evidence:
 The sandbox should write explicit attempt and reflection artifacts. Sensitive
 actions such as spend, payment, deployment, memory writes, or secret access
 should disable execute preference until approval evidence exists.
+
+## Micro ECF policy-pack schema
+
+Use this when a Syrin agent or swarm needs a portable governance contract before
+paid routes, deployment, memory writes, secrets, outreach, or budget changes:
+
+```json
+{
+  "intent": "micro_ecf_policy_pack",
+  "mode": "preview",
+  "budget": {
+    "max_usd": 0.25
+  },
+  "inputs": {
+    "goal": "Preview routes, score leads, and draft growth actions.",
+    "action": "preview route"
+  },
+  "controls": {
+    "run_live": false,
+    "require_match_before_execute": true,
+    "require_pre_action_review": true,
+    "record_policy_fingerprint": true
+  },
+  "expected_outputs": [
+    "policy_pack",
+    "action_review",
+    "execute_payload",
+    "syrin_mount_instructions"
+  ]
+}
+```
+
+Micro ECF should fail closed. Live spend, deployment, memory writes, secret
+access, external messaging, and budget changes need explicit review evidence.
+Prohibited actions should return `deny` rather than a higher-risk live payload.
