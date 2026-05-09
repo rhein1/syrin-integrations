@@ -173,9 +173,10 @@ def build_execute_payload(
     max_cost: float,
     guardrail_report: dict[str, Any],
     backend: str,
+    run_live: bool = False,
 ) -> dict[str, Any]:
     """Build a preview-first Agoragentic execute payload for Syrin Sandbox."""
-    can_execute = guardrail_report["decision"] == "allow"
+    can_execute = guardrail_report["decision"] == "allow" and run_live
     return {
         "task": task,
         "input": {
@@ -219,36 +220,40 @@ def build_syrin_snippet(packages: tuple[str, ...]) -> str:
     """Return a compact Syrin v0.12 Sandbox snippet."""
     package_literal = repr(list(packages))
     return f'''# pip install --upgrade "syrin>={SYRIN_MIN_VERSION}"
+import asyncio
 import json
 from pathlib import Path
 
 from syrin import Sandbox
 
-async with Sandbox(bash=True, python=True, packages={package_literal}) as sb:
-    await sb.exec_bash("""
-        mkdir -p "$SANDBOX_WORKSPACE/outputs"
-        cat > "$SANDBOX_WORKSPACE/task.json" <<'JSON'
+async def main():
+    async with Sandbox(bash=True, python=True, packages={package_literal}) as sb:
+        await sb.exec_bash("""
+            mkdir -p "$SANDBOX_WORKSPACE/outputs"
+            cat > "$SANDBOX_WORKSPACE/task.json" <<'JSON'
 {{"task": "preview-first Agoragentic route"}}
 JSON
-    """)
+        """)
 
-    result = await sb.exec_python("""
-        import json
-        import os
-        from pathlib import Path
+        result = await sb.exec_python("""
+            import json
+            import os
+            from pathlib import Path
 
-        workspace = Path(os.environ["SANDBOX_WORKSPACE"])
-        task = json.loads((workspace / "task.json").read_text())
-        attempt = {{
-            "status": "planned",
-            "task": task["task"],
-            "router": "POST /api/execute",
-            "live_mutation": False,
-        }}
-        (workspace / "outputs" / "attempt.json").write_text(json.dumps(attempt))
-        print(json.dumps(attempt))
-    """)
-    print(result.stdout)
+            workspace = Path(os.environ["SANDBOX_WORKSPACE"])
+            task = json.loads((workspace / "task.json").read_text())
+            attempt = {{
+                "status": "planned",
+                "task": task["task"],
+                "router": "POST /api/execute",
+                "live_mutation": False,
+            }}
+            (workspace / "outputs" / "attempt.json").write_text(json.dumps(attempt))
+            print(json.dumps(attempt))
+        """)
+        print(result.stdout)
+
+asyncio.run(main())
 '''
 
 
@@ -261,6 +266,9 @@ def build_syrin_sandbox_plan(
     requested_action: str = "preview route",
 ) -> SyrinSandboxPlan:
     """Build a Syrin v0.12 sandbox plan for Agoragentic routing."""
+    if not math.isfinite(float(max_cost)) or float(max_cost) < 0:
+        raise ValueError("max_cost must be a finite non-negative number")
+
     guardrail_report = build_guardrail_report(
         requested_action=requested_action,
         live_enabled=live_enabled,
@@ -278,6 +286,7 @@ def build_syrin_sandbox_plan(
             max_cost=max_cost,
             guardrail_report=guardrail_report,
             backend=backend,
+            run_live=live_enabled,
         ),
         resource_limits=build_resource_limits(max_cost=max_cost),
         syrin_snippet=build_syrin_snippet(packages=packages),

@@ -261,6 +261,28 @@ class AutonomousLifecycleExampleTests(unittest.TestCase):
         self.assertFalse(data["execute_payload"]["constraints"]["prefer_execute"])
         self.assertTrue(data["execute_payload"]["constraints"]["preview_only"])
 
+    def test_syrin_sandbox_default_live_off_keeps_preview_only(self):
+        """Allowed actions should still stay preview-only unless live mode is explicit."""
+        report = syrin_sandbox.build_guardrail_report("preview route", live_enabled=False)
+        payload = syrin_sandbox.build_execute_payload(
+            "Preview a safe route.",
+            max_cost=0.25,
+            guardrail_report=report,
+            backend="PROCESS",
+        )
+
+        self.assertEqual(report["decision"], "allow")
+        self.assertFalse(payload["constraints"]["prefer_execute"])
+        self.assertTrue(payload["constraints"]["preview_only"])
+
+    def test_syrin_sandbox_rejects_invalid_direct_budget(self):
+        """Direct plan builders should reject invalid budgets, not only the CLI."""
+        with self.assertRaisesRegex(ValueError, "max_cost"):
+            syrin_sandbox.build_syrin_sandbox_plan(
+                "Preview a route.",
+                max_cost=float("nan"),
+            )
+
     def test_syrin_sandbox_action_matching_uses_boundaries(self):
         """Sandbox action matching should avoid substring false positives."""
         report = syrin_sandbox.build_guardrail_report(
