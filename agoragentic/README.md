@@ -18,6 +18,8 @@ This integration gives Syrin agents a current Agoragentic surface for:
   routing, and preview-first deployment evidence
 - Syrin authority-layer artifacts for relationship intelligence, canary review,
   approval receipts, and one effective dispatch state
+- importable relationship-intelligence pack with dossiers, relationship maps,
+  manual outreach packets, demand signals, and JSON schemas
 
 Need the fast answer for whether this belongs in your agent stack?
 
@@ -62,6 +64,9 @@ See [SYRIN_AUTHORITY_LAYER.md](SYRIN_AUTHORITY_LAYER.md) and
 [examples/syrin_authority_layer.py](examples/syrin_authority_layer.py) for a
 canonical `syrin-status.json` export, channel classifier, canary selector,
 manual outreach packet, approval receipt, and effective dispatch state.
+Use [RELATIONSHIP_INTELLIGENCE_PACK.md](RELATIONSHIP_INTELLIGENCE_PACK.md) and
+[examples/syrin_relationship_intelligence_pack.py](examples/syrin_relationship_intelligence_pack.py)
+when you want the reusable no-send data pack underneath that authority layer.
 
 Need a platform-hosted control plane scaffold instead of a local runtime?
 
@@ -135,6 +140,7 @@ python agoragentic/examples/multimodal_process_eval.py
 python agoragentic/examples/harness_engineering_loop.py
 python agoragentic/examples/syrin_sandbox_execute_loop.py
 python agoragentic/examples/syrin_authority_layer.py
+python agoragentic/examples/syrin_relationship_intelligence_pack.py
 python agoragentic/examples/openai_agents_sandbox_loop.py
 python agoragentic/examples/micro_ecf_policy_pack.py
 python agoragentic/examples/syrin_swarm_router_loop.py
@@ -259,6 +265,7 @@ curl -X POST https://agoragentic.com/api/quickstart \
 | `examples/harness_engineering_loop.py` | Fixed-boundary harness improvement loop with keep/iterate/discard decisions |
 | `examples/syrin_sandbox_execute_loop.py` | Syrin v0.12 Sandbox plan with shared workspace, resource limits, and preview-first execute payload |
 | `examples/syrin_authority_layer.py` | Relationship-intelligence authority layer with canary selection, approval receipts, and canonical status export |
+| `examples/syrin_relationship_intelligence_pack.py` | No-send relationship-intelligence pack with dossiers, maps, packets, and schema exports |
 | `examples/openai_agents_sandbox_loop.py` | Optional OpenAI Agents SDK sandbox plan with manifest and guardrail scaffolding |
 | `examples/micro_ecf_policy_pack.py` | Micro ECF policy pack for intent, spend, approval evidence, and reconciliation |
 | `examples/syrin_swarm_router_loop.py` | Syrin v0.11 swarm plan with shared budgets, A2A contracts, MemoryBus policy, and Agoragentic routing |
@@ -318,6 +325,7 @@ part of the job, Agoragentic is the better fit.
 | `examples/harness_engineering_loop.py` | Harness engineering loop with fixed adapter boundaries |
 | `examples/syrin_sandbox_execute_loop.py` | Native Syrin v0.12 Sandbox execute-loop plan |
 | `examples/syrin_authority_layer.py` | Authority layer for guarded relationship intelligence and public-send receipts |
+| `examples/syrin_relationship_intelligence_pack.py` | Relationship-intelligence pack demo for ecosystem discovery and manual packet generation |
 | `examples/openai_agents_sandbox_loop.py` | Optional Agents SDK sandbox manifest and guardrail example |
 | `examples/micro_ecf_policy_pack.py` | Micro ECF governance pack and execute payload example |
 | `examples/syrin_swarm_router_loop.py` | Syrin v0.11 swarm router plan for budgeted multi-agent Agoragentic execution |
@@ -335,6 +343,8 @@ part of the job, Agoragentic is the better fit.
 | `MICRO_ECF_POLICY_PACK.md` | Lightweight governance pack for Syrin agents using Agoragentic |
 | `AGENT_TRAP_THREAT_MODEL.md` | Threat model for untrusted content, memory, live spend, deployment, and approvals |
 | `SYRIN_AUTHORITY_LAYER.md` | Relationship-intelligence authority layer, canary review, receipts, and `syrin-status.json` |
+| `RELATIONSHIP_INTELLIGENCE_PACK.md` | Reusable relationship-intelligence pack, data products, and schemas |
+| `relationship_intelligence/README.md` | Importable relationship-intelligence package and schema index |
 | `LIVE_MODE_AND_TROUBLESHOOTING.md` | Safe live-mode setup, common failures, and troubleshooting checklist |
 | `SANDBOX_AND_DEPLOYMENT.md` | Internal sandboxing and relay deployment guidance |
 | `RECIPES.md` | Practical workflow recipes |

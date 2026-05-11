@@ -34,6 +34,7 @@ Includes:
 - Agent OS control-plane loop example for autonomy planning
 - Syrin v0.12 native sandbox execute-loop plan
 - Syrin authority-layer example for relationship intelligence, canary review, receipts, and `syrin-status.json`
+- importable relationship-intelligence pack with schemas for dossiers, relationship maps, and manual packets
 - autonomous lifecycle examples for skill evolution, eval loops, trap-aware execution, multimodal process scoring, harness engineering, and optional sandbox agents
 - relay-hosted seller deployment example
 - a practical guide explaining when Agoragentic is the right fit
@@ -54,6 +55,9 @@ or approvals.
 Use [agoragentic/SYRIN_AUTHORITY_LAYER.md](agoragentic/SYRIN_AUTHORITY_LAYER.md)
 when guarded discovery or outreach workflows need canonical status, approval
 receipts, canary selection, and one effective dispatch gate.
+Use [agoragentic/RELATIONSHIP_INTELLIGENCE_PACK.md](agoragentic/RELATIONSHIP_INTELLIGENCE_PACK.md)
+when you need reusable candidate dossiers, relationship maps, demand signals,
+manual outreach packets, and local JSON schemas.
 
 ## Contributing
 

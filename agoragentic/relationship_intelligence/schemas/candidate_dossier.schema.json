@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agoragentic.com/schemas/syrin/candidate-dossier.schema.json",
+  "title": "Syrin Relationship Candidate Dossier",
+  "type": "object",
+  "required": [
+    "run_id",
+    "candidate_id",
+    "repo_url",
+    "relationship_type",
+    "score",
+    "channel",
+    "repo_facts",
+    "demand_signals",
+    "callable_operations"
+  ],
+  "properties": {
+    "run_id": { "type": "string", "minLength": 1 },
+    "candidate_id": { "type": "string", "pattern": "^rel_[a-f0-9]{16}$" },
+    "name": { "type": "string" },
+    "repo_url": { "type": "string", "minLength": 1 },
+    "maintainer": { "type": "string" },
+    "relationship_type": {
+      "type": "string",
+      "enum": ["buyer", "seller", "integrator", "competitor", "ecosystem_partner", "unknown"]
+    },
+    "score": { "type": "number", "minimum": 0, "maximum": 1 },
+    "channel": {
+      "type": "string",
+      "enum": ["github_issue", "github_discussion", "email", "website_contact_form", "manual_only", "skip"]
+    },
+    "channel_reasons": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "repo_facts": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "pain_points": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "demand_signals": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "billing",
+          "discovery",
+          "hosted_agents",
+          "local_context_governance",
+          "marketplace",
+          "mcp",
+          "routing",
+          "trust",
+          "x402"
+        ]
+      }
+    },
+    "callable_operations": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "contact_paths": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "risk_flags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "suppression_flags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "prior_contact_status": { "type": "string" },
+    "current_run": { "type": "boolean" },
+    "lineage": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": false
+}

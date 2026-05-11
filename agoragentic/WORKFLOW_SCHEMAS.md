@@ -644,6 +644,57 @@ candidate lineage, effective dispatch state, outbound action state, and blocked
 reasons. If the lead-set digest did not change, the authority layer should back
 off instead of regenerating stale outreach.
 
+## Relationship intelligence pack schema
+
+Use this when Syrin should turn raw ecosystem observations into reusable
+relationship intelligence before the authority layer decides whether any action
+should be approved:
+
+```json
+{
+  "intent": "relationship_intelligence_pack",
+  "mode": "preview",
+  "inputs": {
+    "run_id": "run_2026_05_11_relationship_intelligence",
+    "raw_candidates": [
+      {
+        "name": "local-agent-router",
+        "repo_url": "https://github.com/example/local-agent-router",
+        "maintainer": "local-router-maintainer",
+        "description": "OpenAI-compatible local routing with MCP server examples.",
+        "topics": ["mcp", "routing", "local agents"],
+        "repo_facts": [
+          "OpenAI-compatible local routing",
+          "MCP server examples"
+        ],
+        "discussions_enabled": true
+      }
+    ]
+  },
+  "controls": {
+    "run_live": false,
+    "extract_demand_signals": true,
+    "build_candidate_dossiers": true,
+    "build_relationship_map": true,
+    "build_manual_packets": true,
+    "dispatch_enabled_effective": false
+  },
+  "expected_outputs": [
+    "candidate_dossiers",
+    "relationship_map",
+    "manual_outreach_packets",
+    "top_opportunities",
+    "status",
+    "schemas"
+  ]
+}
+```
+
+The relationship-intelligence pack is intentionally upstream of the authority
+layer. It can classify buyers, sellers, integrators, competitors, and ecosystem
+partners. It can identify demand signals and produce manual packets. It should
+not send messages or infer approval.
+
 ## Micro ECF policy-pack schema
 
 Use this when a Syrin agent or swarm needs a portable governance contract before

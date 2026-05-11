@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agoragentic.com/schemas/syrin/relationship-map.schema.json",
+  "title": "Syrin Relationship Map",
+  "type": "object",
+  "required": ["digest", "candidate_count", "by_relationship_type", "by_channel", "candidates"],
+  "properties": {
+    "digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "candidate_count": { "type": "integer", "minimum": 0 },
+    "by_relationship_type": {
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 0 }
+    },
+    "by_channel": {
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 0 }
+    },
+    "candidates": {
+      "type": "array",
+      "items": { "$ref": "candidate_dossier.schema.json" }
+    }
+  },
+  "additionalProperties": false
+}

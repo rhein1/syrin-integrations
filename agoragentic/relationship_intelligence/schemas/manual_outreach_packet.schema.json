@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agoragentic.com/schemas/syrin/manual-outreach-packet.schema.json",
+  "title": "Syrin Manual Outreach Packet",
+  "type": "object",
+  "required": [
+    "candidate_id",
+    "candidate",
+    "draft",
+    "quality",
+    "allowed_for_manual_review",
+    "send_authority"
+  ],
+  "properties": {
+    "candidate_id": { "type": "string", "pattern": "^rel_[a-f0-9]{16}$" },
+    "candidate": { "$ref": "candidate_dossier.schema.json" },
+    "draft": { "type": "string" },
+    "quality": {
+      "type": "object",
+      "required": [
+        "fact_hits",
+        "operation_hits",
+        "allowed_for_manual_review",
+        "blocked_reasons"
+      ],
+      "properties": {
+        "fact_hits": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "operation_hits": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "allowed_for_manual_review": { "type": "boolean" },
+        "blocked_reasons": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "allowed_for_manual_review": { "type": "boolean" },
+    "send_authority": {
+      "type": "object",
+      "required": ["dispatch_enabled_effective", "requires_approval_receipt", "reason"],
+      "properties": {
+        "dispatch_enabled_effective": { "type": "boolean", "const": false },
+        "requires_approval_receipt": { "type": "boolean", "const": true },
+        "reason": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

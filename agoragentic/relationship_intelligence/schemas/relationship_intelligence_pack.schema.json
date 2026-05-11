@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agoragentic.com/schemas/syrin/relationship-intelligence-pack.schema.json",
+  "title": "Syrin Relationship Intelligence Pack",
+  "type": "object",
+  "required": [
+    "run_id",
+    "mode",
+    "send_authority",
+    "relationship_map",
+    "candidate_dossiers",
+    "manual_outreach_packets",
+    "top_opportunities",
+    "schemas",
+    "status"
+  ],
+  "properties": {
+    "run_id": { "type": "string", "minLength": 1 },
+    "mode": { "type": "string", "const": "relationship_intelligence" },
+    "send_authority": {
+      "type": "object",
+      "required": ["dispatch_enabled_effective", "reason"],
+      "properties": {
+        "dispatch_enabled_effective": { "type": "boolean", "const": false },
+        "reason": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "relationship_map": { "$ref": "relationship_map.schema.json" },
+    "candidate_dossiers": {
+      "type": "array",
+      "items": { "$ref": "candidate_dossier.schema.json" }
+    },
+    "manual_outreach_packets": {
+      "type": "array",
+      "items": { "$ref": "manual_outreach_packet.schema.json" }
+    },
+    "top_opportunities": {
+      "type": "array",
+      "items": { "$ref": "candidate_dossier.schema.json" }
+    },
+    "schemas": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z_]+\\.schema\\.json$" }
+    },
+    "status": {
+      "type": "object",
+      "required": [
+        "lead_set_digest",
+        "scored_count",
+        "safe_candidate_count",
+        "manual_packet_count",
+        "dispatch_enabled_effective",
+        "outbound_actions_taken",
+        "no_material_data_change",
+        "recommended_action"
+      ],
+      "properties": {
+        "lead_set_digest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "scored_count": { "type": "integer", "minimum": 0 },
+        "safe_candidate_count": { "type": "integer", "minimum": 0 },
+        "manual_packet_count": { "type": "integer", "minimum": 0 },
+        "dispatch_enabled_effective": { "type": "boolean", "const": false },
+        "outbound_actions_taken": { "type": "boolean", "const": false },
+        "no_material_data_change": { "type": "boolean" },
+        "recommended_action": {
+          "type": "string",
+          "enum": ["review_top_opportunities", "backoff"]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
