@@ -30,6 +30,7 @@ openai_sandbox = _load_example("openai_agents_sandbox_loop")
 syrin_sandbox = _load_example("syrin_sandbox_execute_loop")
 syrin_swarm = _load_example("syrin_swarm_router_loop")
 micro_ecf = _load_example("micro_ecf_policy_pack")
+syrin_authority = _load_example("syrin_authority_layer")
 
 
 class AutonomousLifecycleExampleTests(unittest.TestCase):
@@ -474,6 +475,155 @@ class AutonomousLifecycleExampleTests(unittest.TestCase):
 
         self.assertNotIn("mutated", policy.review_gates["live_spend"])
         self.assertEqual(micro_ecf.fingerprint_policy(policy), before)
+
+    def test_syrin_authority_classifies_issue_automation_away_from_issues(self):
+        """Issue automation should force a safer channel than GitHub Issues."""
+        classified = syrin_authority.classify_channel(
+            {
+                "issues_enabled": True,
+                "issue_automation": True,
+                "discussions_enabled": True,
+            }
+        )
+
+        self.assertEqual(classified["channel"], "github_discussion")
+        self.assertIn("issue_automation", classified["reasons"])
+
+    def test_syrin_authority_canary_uses_current_unsuppressed_candidate(self):
+        """Canary review should pick one current candidate and skip stale state."""
+        run_id = "run_current"
+        current = syrin_authority.build_candidate_dossier(
+            run_id=run_id,
+            repo_url="https://github.com/example/current",
+            maintainer="maintainer",
+            score=0.8,
+            relationship_type="integrator",
+            channel="email",
+            repo_facts=("MCP server examples", "local routing"),
+            callable_operations=("agoragentic_match",),
+        )
+        stale = syrin_authority.build_candidate_dossier(
+            run_id="run_old",
+            repo_url="https://github.com/example/stale",
+            maintainer="maintainer",
+            score=0.99,
+            relationship_type="integrator",
+            channel="email",
+            repo_facts=("MCP server examples", "local routing"),
+            callable_operations=("agoragentic_match",),
+            current_run=False,
+        )
+
+        canary = syrin_authority.select_canary_candidate((stale, current), run_id=run_id)
+
+        self.assertEqual(canary["selected_count"], 1)
+        self.assertEqual(canary["selected"]["candidate_id"], current.candidate_id)
+        self.assertFalse(canary["send_allowed"])
+        self.assertTrue(canary["requires_approval_receipt"])
+
+    def test_syrin_authority_blocks_generic_pitch_before_manual_review(self):
+        """Generic marketplace copy should not pass the manual packet quality gate."""
+        candidate = syrin_authority.build_candidate_dossier(
+            run_id="run_generic",
+            repo_url="https://github.com/example/framework",
+            maintainer="framework-maintainer",
+            score=0.7,
+            relationship_type="competitor",
+            channel="manual_only",
+            repo_facts=("MCP server examples", "local inference adapter"),
+            callable_operations=("agoragentic_match",),
+        )
+        draft = "We can help you grow with our agent marketplace."
+
+        quality = syrin_authority.evaluate_outreach_draft(candidate, draft)
+
+        self.assertFalse(quality["allowed_for_manual_review"])
+        self.assertIn("generic_marketplace_pitch", quality["blocked_reasons"])
+        self.assertIn("requires_two_repo_specific_facts", quality["blocked_reasons"])
+        self.assertIn("requires_named_callable_operation", quality["blocked_reasons"])
+
+    def test_syrin_authority_accepts_specific_manual_packet_without_send(self):
+        """A specific draft can be reviewed while dispatch remains disabled."""
+        candidate = syrin_authority.build_candidate_dossier(
+            run_id="run_packet",
+            repo_url="https://github.com/example/router",
+            maintainer="router-maintainer",
+            score=0.91,
+            relationship_type="integrator",
+            channel="github_discussion",
+            repo_facts=("MCP server examples", "OpenAI-compatible local routing"),
+            callable_operations=("agoragentic_match",),
+        )
+        draft = (
+            "Your MCP server examples and OpenAI-compatible local routing make "
+            "this a strong fit for agoragentic_match."
+        )
+
+        packet = syrin_authority.build_manual_outreach_packet(candidate, draft)
+
+        self.assertTrue(packet["allowed_for_manual_review"])
+        self.assertFalse(packet["send_authority"]["dispatch_enabled_effective"])
+        self.assertEqual(packet["quality"]["fact_hits"], list(candidate.repo_facts))
+        self.assertEqual(packet["quality"]["operation_hits"], ["agoragentic_match"])
+
+    def test_syrin_authority_dispatch_requires_live_and_receipt(self):
+        """Effective dispatch should be false until live mode and receipt align."""
+        candidate = syrin_authority.build_candidate_dossier(
+            run_id="run_dispatch",
+            repo_url="https://github.com/example/reviewable",
+            maintainer="review-maintainer",
+            score=0.9,
+            relationship_type="integrator",
+            channel="email",
+            repo_facts=("MCP server examples", "billing integration"),
+            callable_operations=("agoragentic_execute",),
+        )
+        receipt = syrin_authority.build_approval_receipt(
+            run_id=candidate.run_id,
+            candidate_id=candidate.candidate_id,
+        )
+
+        preview = syrin_authority.compute_dispatch_state(candidate, receipt, run_live=False)
+        live = syrin_authority.compute_dispatch_state(candidate, receipt, run_live=True)
+
+        self.assertFalse(preview["dispatch_enabled_effective"])
+        self.assertIn("run_live_disabled", preview["blocked_reasons"])
+        self.assertTrue(live["dispatch_enabled_effective"])
+        self.assertEqual(live["blocked_reasons"], [])
+
+    def test_syrin_authority_status_exports_counts_and_material_change(self):
+        """Status export should contain the canonical counts and digest circuit breaker."""
+        run_id = "run_status"
+        candidates = syrin_authority.sample_candidates(run_id)
+        digest = syrin_authority.build_lead_set_digest(candidates)
+        receipt = syrin_authority.build_approval_receipt(
+            run_id=run_id,
+            candidate_id=candidates[0].candidate_id,
+        )
+        state = syrin_authority.compute_dispatch_state(
+            candidates[0],
+            receipt=receipt,
+            run_live=False,
+        )
+
+        status = syrin_authority.build_syrin_status(
+            run_id=run_id,
+            candidates=candidates,
+            approval_receipts=(receipt,),
+            dispatch_states=(state,),
+            previous_lead_set_digest=digest,
+        )
+
+        self.assertEqual(status["run_id"], run_id)
+        self.assertEqual(status["scored_count"], 2)
+        self.assertEqual(status["safe_candidate_count"], 1)
+        self.assertEqual(status["blocked_count"], 1)
+        self.assertEqual(status["approved_to_send_count"], 1)
+        self.assertFalse(status["dispatch_enabled_effective"])
+        self.assertFalse(status["outbound_actions_taken"])
+        self.assertEqual(status["issue_locked_count"], 1)
+        self.assertTrue(status["material_change"]["no_material_data_change"])
+        self.assertEqual(status["material_change"]["recommended_action"], "backoff")
 
 
 if __name__ == "__main__":

@@ -585,6 +585,65 @@ The export kit packages the current integration into a deployment contract. It
 does not claim that `syrin integrate agoragentic` exists in Syrin core; that
 remains a maintainer-gated future step.
 
+## Syrin authority-layer schema
+
+Use this when Syrin should act as an ecosystem scout, lead-intelligence agent,
+relationship memory, market research agent, or manual outreach copilot without
+turning into an autonomous public sender:
+
+```json
+{
+  "intent": "syrin_authority_layer",
+  "mode": "preview",
+  "inputs": {
+    "run_id": "run_2026_05_11_blackbox_guarded",
+    "policy_version": "syrin-authority-v1",
+    "prompt_version": "relationship-intelligence-v1",
+    "candidates": [
+      {
+        "candidate_id": "cand_...",
+        "repo_url": "https://github.com/example/local-agent-router",
+        "relationship_type": "integrator",
+        "channel": "github_discussion",
+        "repo_facts": [
+          "OpenAI-compatible local routing",
+          "MCP server examples"
+        ],
+        "callable_operations": [
+          "agoragentic_match",
+          "agoragentic_execute"
+        ]
+      }
+    ]
+  },
+  "controls": {
+    "run_live": false,
+    "one_canary_per_run": true,
+    "require_current_run_candidate": true,
+    "require_two_repo_specific_facts": true,
+    "require_callable_operation": true,
+    "require_approval_receipt_for_send": true,
+    "block_generic_marketplace_pitch": true,
+    "respect_dnc_and_suppression": true
+  },
+  "expected_outputs": [
+    "relationship_map",
+    "manual_outreach_packet",
+    "canary",
+    "approval_receipt",
+    "dispatch_state",
+    "syrin_status",
+    "material_change"
+  ]
+}
+```
+
+`syrin-status.json` should be the canonical observer export. It should include
+run and policy metadata, lead-set digest, candidate counts, suppression counts,
+candidate lineage, effective dispatch state, outbound action state, and blocked
+reasons. If the lead-set digest did not change, the authority layer should back
+off instead of regenerating stale outreach.
+
 ## Micro ECF policy-pack schema
 
 Use this when a Syrin agent or swarm needs a portable governance contract before

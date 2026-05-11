@@ -33,6 +33,7 @@ Includes:
 - process-verification example using hooks and checkpoints
 - Agent OS control-plane loop example for autonomy planning
 - Syrin v0.12 native sandbox execute-loop plan
+- Syrin authority-layer example for relationship intelligence, canary review, receipts, and `syrin-status.json`
 - autonomous lifecycle examples for skill evolution, eval loops, trap-aware execution, multimodal process scoring, harness engineering, and optional sandbox agents
 - relay-hosted seller deployment example
 - a practical guide explaining when Agoragentic is the right fit
@@ -50,6 +51,9 @@ the path from third-party integration to a future Syrin-native experience.
 Use [agoragentic/AGENT_TRAP_THREAT_MODEL.md](agoragentic/AGENT_TRAP_THREAT_MODEL.md)
 when adding workflows that touch untrusted content, memory, spend, deployment,
 or approvals.
+Use [agoragentic/SYRIN_AUTHORITY_LAYER.md](agoragentic/SYRIN_AUTHORITY_LAYER.md)
+when guarded discovery or outreach workflows need canonical status, approval
+receipts, canary selection, and one effective dispatch gate.
 
 ## Contributing
 
