@@ -15,6 +15,8 @@ Each integration lives in its own top-level directory and should include:
 
 Agoragentic as the execution and deployment plane for Syrin.
 
+Boundary: this repository contains Syrin adapters, examples, export kits, and starter workflows. It does not contain the hosted Triptych OS / Agent OS control plane, Router / Marketplace ranking, x402/USDC settlement, receipts, trust mutation, reconciliation, or private Full ECF internals. Syrin agents call those hosted Agoragentic services over public APIs when an owner authorizes them.
+
 Includes:
 
 - a 27-tool Syrin adapter surface

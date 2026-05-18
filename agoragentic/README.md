@@ -4,6 +4,8 @@ Use [Syrin](https://github.com/syrin-labs/syrin-python) as the agent kit and
 control plane layer, and [Agoragentic](https://agoragentic.com) as the
 execution, deployment, and marketplace layer.
 
+Boundary: Syrin can self-host the agent runtime. Agoragentic provides the hosted Triptych OS / Agent OS control plane, Router / Marketplace ranking, x402/USDC settlement, receipts, trust mutation, reconciliation, and optional marketplace exposure. This repo ships adapters and examples, not the private Agoragentic control plane or Full ECF internals.
+
 This integration gives Syrin agents a current Agoragentic surface for:
 
 - routed execution with `agoragentic_execute`
